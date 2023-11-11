@@ -1,7 +1,8 @@
 package chatroom.server.FX;
 
-import chatroom.server.Server;
+import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -10,8 +11,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 public class View {
-    private Server server;
     private final Model model;
     private Stage stage;
     protected Label lblNumber;
@@ -20,8 +22,6 @@ public class View {
     protected Label serverAddressLabel, allUsersTitleLabel;
     protected TextField serverAddressTextField;
     protected Button serverAddressSetButton;
-
-
 
     public View(Stage stage, Model model) {
         this.model = model;
@@ -40,8 +40,9 @@ public class View {
 
         //Left part of the application
         allUsersVBox = new VBox();
-        allUsersTitleLabel = new Label("All Users");
+        allUsersTitleLabel = new Label("Online Users");
         allUsersVBox.getChildren().addAll(allUsersTitleLabel);
+        updateUsersList(model.fetchUsersFromServer());
         pane.setLeft(allUsersVBox);
 
         //Center part of the application
@@ -49,9 +50,10 @@ public class View {
         lblNumber.setText("Hello");
         pane.setCenter(lblNumber);
 
+        // Set action for the "Set Server" button
+        serverAddressSetButton.setOnAction(event -> onSetServerClicked());
 
         Scene scene = new Scene(pane, 800, 600);
-        //scene.getStylesheets().add(getClass().getResource("ChatRoomMVC.css").toExternalForm());
         stage.setScene(scene);
     }
 
@@ -59,7 +61,40 @@ public class View {
         stage.show();
     }
 
-    public Stage getStage(){
+    public Stage getStage() {
         return stage;
+    }
+
+    public void updateUsersList(List<String> userList) {
+        Platform.runLater(() -> {
+            allUsersVBox.getChildren().clear(); // Clear existing content
+
+            // Add the updated user list
+            allUsersVBox.getChildren().addAll(allUsersTitleLabel);
+            for (String user : userList) {
+                Label userLabel = new Label(user);
+                allUsersVBox.getChildren().add(userLabel);
+            }
+        });
+    }
+
+    private void onSetServerClicked() {
+        try {
+            int port = Integer.parseInt(serverAddressTextField.getText().split(":")[1]);
+            if (port > 0 && port < 65536) {
+                model.setServerAddress(serverAddressTextField.getText());
+                model.setServerPort(port);
+                model.pingServer(serverAddressTextField.getText(), port);
+            } else {
+                showAlert("Invalid port number!");
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Invalid port number!");
+        }
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.showAndWait();
     }
 }
