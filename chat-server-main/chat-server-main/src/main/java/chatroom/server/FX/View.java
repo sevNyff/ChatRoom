@@ -16,8 +16,8 @@ public class View {
     private Stage stage;
     protected Label lblNumber;
     protected HBox topHBox;
-    protected VBox allChatsVBox;
-    protected Label serverAddressLabel, allChatsTitleLabel;
+    protected VBox allUsersVBox;
+    protected Label serverAddressLabel, allUsersTitleLabel;
     protected TextField serverAddressTextField;
     protected Button serverAddressSetButton;
 
@@ -39,10 +39,10 @@ public class View {
         pane.setTop(topHBox);
 
         //Left part of the application
-        allChatsVBox = new VBox();
-        allChatsTitleLabel = new Label("Chats");
-        allChatsVBox.getChildren().addAll(allChatsTitleLabel);
-        pane.setLeft(allChatsVBox);
+        allUsersVBox = new VBox();
+        allUsersTitleLabel = new Label("All Users");
+        allUsersVBox.getChildren().addAll(allUsersTitleLabel);
+        pane.setLeft(allUsersVBox);
 
         //Center part of the application
         lblNumber = new Label();
