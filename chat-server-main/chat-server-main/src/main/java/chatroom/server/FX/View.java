@@ -118,7 +118,7 @@ public class View {
         Stage loginStage = new Stage();
         loginStage.setTitle("Login Window");
 
-        LoginWindow loginWindow = new LoginWindow();
+        LoginWindow loginWindow = new LoginWindow(this.model);
 
         Scene scene = new Scene(loginWindow.getGrid(), 300, 200);
         loginStage.setScene(scene);
