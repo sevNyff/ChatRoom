@@ -1,17 +1,20 @@
 package chatroom.server.FX;
 
 // LoginWindow.java
+
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class LoginWindow {
+public class RegisterWindow {
 
     private GridPane grid;
 
-    public LoginWindow() {
+    public RegisterWindow() {
         grid = new GridPane();
         grid.setPadding(new Insets(20, 20, 20, 20));
         grid.setVgap(10);
@@ -23,20 +26,6 @@ public class LoginWindow {
 
         Label passwordLabel = new Label("Password:");
         PasswordField passwordField = new PasswordField();
-
-        Button registerButton = new Button("Register");
-        registerButton.setOnAction(event -> {
-            Stage registerStage = new Stage();
-            registerStage.setTitle("Register Window");
-
-            RegisterWindow registerWindow = new RegisterWindow();
-
-            Scene scene = new Scene(registerWindow.getGrid(), 300, 150);
-            registerStage.setScene(scene);
-
-            // Show the login window
-            registerStage.show();
-        });
 
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(event -> {
@@ -57,8 +46,7 @@ public class LoginWindow {
         grid.add(usernameField, 1, 0);
         grid.add(passwordLabel, 0, 1);
         grid.add(passwordField, 1, 1);
-        grid.add(registerButton, 1,2);
-        grid.add(submitButton, 1, 3);
+        grid.add(submitButton, 1, 2);
     }
 
     public GridPane getGrid() {

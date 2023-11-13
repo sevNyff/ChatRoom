@@ -109,7 +109,7 @@ public class View {
 
         LoginWindow loginWindow = new LoginWindow();
 
-        Scene scene = new Scene(loginWindow.getGrid(), 300, 150);
+        Scene scene = new Scene(loginWindow.getGrid(), 300, 200);
         loginStage.setScene(scene);
 
         // Show the login window
