@@ -12,12 +12,14 @@ import org.json.JSONException;
 public class LoginWindow {
 
     private final Model model;
+    private final View view;
     private String token;
 
     private GridPane grid;
 
-    public LoginWindow(Model model) {
+    public LoginWindow(Model model, View view) {
         this.model = model;
+        this.view = view;
 
         grid = new GridPane();
         grid.setPadding(new Insets(20));
@@ -59,10 +61,13 @@ public class LoginWindow {
                 // Assuming you have a method in your Model class to perform login and get the token
                 String token = model.loginAndGetToken(username, password);
 
+
                 if (token != null && !token.isEmpty()) {
                     // Store the token securely (e.g., in a variable or secure storage)
                     // You can now use this token for subsequent requests to the server
                     System.out.println("Login successful. Token: " + token);
+                    setToken(token);
+                    onSuccessfulLogin(token);
 
                     // Close the login window
                     ((Stage) submitButton.getScene().getWindow()).close();
@@ -78,6 +83,7 @@ public class LoginWindow {
             ((Stage) submitButton.getScene().getWindow()).close();
         });
 
+
         // Add components to the GridPane
         grid.add(usernameLabel, 0, 0);
         grid.add(usernameField, 1, 0);
@@ -87,8 +93,16 @@ public class LoginWindow {
         grid.add(submitButton, 1, 3);
     }
 
+    private void onSuccessfulLogin(String token) {
+        // Notify the View about the successful login
+        view.onSuccessfulLogin(token);
+    }
     public GridPane getGrid() {
         return grid;
+    }
+
+    private void setToken(String token) {
+        this.token = token;
     }
 
     public String getToken() {

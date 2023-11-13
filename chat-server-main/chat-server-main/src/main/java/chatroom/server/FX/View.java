@@ -24,7 +24,7 @@ public class View {
     protected VBox allUsersVBox, sendChatVBox, receiveChatVBox;
     protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel, messageLabel;
     protected TextField serverAddressTextField, sendToTextField, messageTextField;
-    protected Button serverAddressSetButton, loginWindowButton, sendChatButton, receiveChatButton;
+    protected Button serverAddressSetButton, loginWindowButton, sendChatButton, receiveChatButton, logoutButton;
 
     public View(Stage stage, Model model) {
         this.model = model;
@@ -39,8 +39,10 @@ public class View {
         serverAddressTextField = new TextField(model.getServerAddress() + ":" + model.getServerPort());
         serverAddressSetButton = new Button("Set Server");
         loginWindowButton = new Button(("Login"));
+        logoutButton = new Button("Logout");
+        logoutButton.setDisable(true);
         topHBox.getChildren().addAll(serverAddressLabel, serverAddressTextField, serverAddressSetButton,
-                loginWindowButton);
+                loginWindowButton, logoutButton);
         pane.setTop(topHBox);
 
         //Left part of the application
@@ -65,9 +67,12 @@ public class View {
         centerBox.getChildren().addAll(sendChatVBox, receiveChatVBox);
         pane.setCenter(centerBox);
 
+
+
         // Set action for the "Set Server" button
         serverAddressSetButton.setOnAction(event -> onSetServerClicked());
         loginWindowButton.setOnAction(event -> showLoginWindow());
+        logoutButton.setOnAction(event -> onLogoutClicked());
 
         Scene scene = new Scene(pane, 800, 600);
         stage.setScene(scene);
@@ -114,11 +119,28 @@ public class View {
         alert.showAndWait();
     }
 
+    private void onLogoutClicked() {
+        // Perform logout actions
+        // For example, clear the token or perform any other necessary cleanup
+        model.logout(); // You need to implement the logout method in your Model class
+        updateLogoutButton(false); // Disable the logout button
+        showAlertMessage("You are logged out!");
+    }
+
+    private void showAlertMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
+        alert.showAndWait();
+    }
+
+    public void updateLogoutButton(boolean loggedIn) {
+        Platform.runLater(() -> logoutButton.setDisable(!loggedIn));
+    }
+
     private void showLoginWindow(){
         Stage loginStage = new Stage();
         loginStage.setTitle("Login Window");
 
-        LoginWindow loginWindow = new LoginWindow(this.model);
+        LoginWindow loginWindow = new LoginWindow(this.model, this);
 
         Scene scene = new Scene(loginWindow.getGrid(), 300, 200);
         loginStage.setScene(scene);
@@ -126,5 +148,10 @@ public class View {
         // Show the login window
         loginStage.show();
         }
+    public void onSuccessfulLogin(String token) {
+        // Update the UI or perform actions when a successful login occurs
+        // For example, enable the logout button and perform any other necessary tasks
+        updateLogoutButton(true); // Enable the logout button
+    }
 
 }

@@ -19,12 +19,26 @@ public class Model {
 
     private String serverAddress;
     private int serverPort;
+    public String userToken;
 
     public Model() {
         // Set default server address and port
         this.serverAddress = "javaprojects.ch";
         this.serverPort = 50001;
     }
+
+    public String getUserToken() {
+        return userToken;
+    }
+
+
+
+    public boolean isLoggedIn() {
+        // Check if the user is currently logged in
+        System.out.println(userToken);
+        return userToken != null && !userToken.isEmpty();
+    }
+
 
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
@@ -137,6 +151,8 @@ public class Model {
                 // Close the connection
                 connection.disconnect();
 
+                setUserToken(token);
+
                 return token;
             } else {
                 // Handle login failure (display an error message, etc.)
@@ -148,6 +164,9 @@ public class Model {
             // Handle exception if needed
             return null;
         }
+    }
+    public void setUserToken(String token) {
+        this.userToken = token;
     }
 
     private String extractTokenFromResponse(HttpURLConnection connection) throws IOException {
@@ -206,6 +225,50 @@ public class Model {
             // Handle exception if needed
             return false;
         }
+    }
+    public void logout() {
+        String serverLogoutEndpoint = "http://" + this.serverAddress + ":" + this.serverPort + "/user/logout";
+       if (isLoggedIn()) {
+            try {
+                // Construct the logout URL
+                URL url = new URL(serverLogoutEndpoint);
+
+                // Create the HTTP connection
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json");
+
+                String jsonInputString = "{\"username\": \"" + userToken + "\"}";
+
+                // Set up the connection for output (i.e., sending the JSON payload)
+                connection.setDoOutput(true);
+
+                // Write the JSON payload to the connection
+                try (OutputStream os = connection.getOutputStream()) {
+                    byte[] input = jsonInputString.getBytes("UTF-8");
+                    os.write(input, 0, input.length);
+                }
+                // Get the HTTP response code
+                int responseCode = connection.getResponseCode();
+
+                System.out.println("Response code: " + responseCode);
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Logout successful
+                    System.out.println("Logout successful!");
+                } else {
+                    // Handle logout failure (display an error message, etc.)
+                    System.out.println("Logout failed. HTTP Response Code: " + responseCode);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Handle exception if needed
+                System.out.println("Logout failed due to an exception: " + e.getMessage());
+            } finally {
+                // Whether the logout succeeded or not, clear the user token locally
+                userToken = null;
+            }
+       }
     }
 
 }
