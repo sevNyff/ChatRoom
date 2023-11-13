@@ -11,7 +11,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class View {
     private final Model model;
@@ -21,7 +24,7 @@ public class View {
     protected VBox allUsersVBox;
     protected Label serverAddressLabel, allUsersTitleLabel;
     protected TextField serverAddressTextField;
-    protected Button serverAddressSetButton;
+    protected Button serverAddressSetButton, loginWindowButton;
 
     public View(Stage stage, Model model) {
         this.model = model;
@@ -35,7 +38,9 @@ public class View {
         serverAddressLabel = new Label("Server Address:");
         serverAddressTextField = new TextField(model.getServerAddress() + ":" + model.getServerPort());
         serverAddressSetButton = new Button("Set Server");
-        topHBox.getChildren().addAll(serverAddressLabel, serverAddressTextField, serverAddressSetButton);
+        loginWindowButton = new Button(("Login"));
+        topHBox.getChildren().addAll(serverAddressLabel, serverAddressTextField, serverAddressSetButton,
+                loginWindowButton);
         pane.setTop(topHBox);
 
         //Left part of the application
@@ -52,6 +57,7 @@ public class View {
 
         // Set action for the "Set Server" button
         serverAddressSetButton.setOnAction(event -> onSetServerClicked());
+        loginWindowButton.setOnAction(event -> showLoginWindow());
 
         Scene scene = new Scene(pane, 800, 600);
         stage.setScene(scene);
@@ -96,4 +102,18 @@ public class View {
         Alert alert = new Alert(Alert.AlertType.ERROR, message);
         alert.showAndWait();
     }
+
+    private void showLoginWindow(){
+        Stage loginStage = new Stage();
+        loginStage.setTitle("Login Window");
+
+        LoginWindow loginWindow = new LoginWindow();
+
+        Scene scene = new Scene(loginWindow.getGrid(), 300, 150);
+        loginStage.setScene(scene);
+
+        // Show the login window
+        loginStage.show();
+        }
+
 }
