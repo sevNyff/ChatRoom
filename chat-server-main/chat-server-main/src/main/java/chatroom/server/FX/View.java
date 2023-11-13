@@ -33,7 +33,7 @@ public class View {
         //Top Part of the Application
         topHBox = new HBox();
         serverAddressLabel = new Label("Server Address:");
-        serverAddressTextField = new TextField("javaprojects.ch:50001");
+        serverAddressTextField = new TextField(model.getServerAddress() + ":" + model.getServerPort());
         serverAddressSetButton = new Button("Set Server");
         topHBox.getChildren().addAll(serverAddressLabel, serverAddressTextField, serverAddressSetButton);
         pane.setTop(topHBox);
@@ -80,11 +80,10 @@ public class View {
 
     private void onSetServerClicked() {
         try {
-            int port = Integer.parseInt(serverAddressTextField.getText().split(":")[1]);
-            if (port > 0 && port < 65536) {
+            model.setServerPort(Integer.parseInt(serverAddressTextField.getText().split(":")[1]));
+            if (model.getServerPort() > 0 && model.getServerPort() < 65536) {
                 model.setServerAddress(serverAddressTextField.getText());
-                model.setServerPort(port);
-                model.pingServer(serverAddressTextField.getText(), port);
+                model.pingServer(serverAddressTextField.getText(), model.getServerPort());
             } else {
                 showAlert("Invalid port number!");
             }

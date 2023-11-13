@@ -8,10 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +28,11 @@ public class Model {
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
     }
-
+public String getServerAddress(){return this.serverAddress;};
     public void setServerPort(int serverPort) {
         this.serverPort = serverPort;
     }
+    public int getServerPort(){return this.serverPort;}
     public boolean pingServer(String serverAddress, int port) {
         try {
             URL url = new URL("http://" + serverAddress + ":" + port + "/ping");
@@ -49,7 +48,7 @@ public class Model {
     }
 
     public List<String> fetchUsersFromServer() {
-        String serverEndpoint = "http://javaprojects.ch:50001/users/online";
+        String serverEndpoint = "http://" + this.serverAddress + ":" + this.serverPort + "/users/online";
 
         try {
             URL url = new URL(serverEndpoint);

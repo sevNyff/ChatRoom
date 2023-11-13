@@ -22,8 +22,8 @@ public class Controller {
 
     public void onSetServerClicked() {
         try {
-            int port = Integer.parseInt(getPortNumber());
-            String serverAddress = getServerAddress();
+            int port = Integer.parseInt(getPortNumberFromTextField());
+            String serverAddress = getServerAddressFromTextField();
 
             // Print statements for debugging
             System.out.println("Server Address: " + serverAddress);
@@ -49,8 +49,8 @@ public class Controller {
         }
     }
 
-    public String getPortNumber(){
+    public String getPortNumberFromTextField(){
         return view.serverAddressTextField.getText().split(":")[1];
     }
-    public String getServerAddress(){return view.serverAddressTextField.getText().split(":")[0];}
+    public String getServerAddressFromTextField(){return view.serverAddressTextField.getText().split(":")[0];}
 }
