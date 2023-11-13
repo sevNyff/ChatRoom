@@ -28,7 +28,7 @@ public class Model {
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
     }
-public String getServerAddress(){return this.serverAddress;};
+    public String getServerAddress(){return this.serverAddress;};
     public void setServerPort(int serverPort) {
         this.serverPort = serverPort;
     }
@@ -38,6 +38,9 @@ public String getServerAddress(){return this.serverAddress;};
             URL url = new URL("http://" + serverAddress + ":" + port + "/ping");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
+
+            //wait 1 second for response, else not pingable
+            connection.setConnectTimeout(1000);
 
             int responseCode = connection.getResponseCode();
             return responseCode == HttpURLConnection.HTTP_OK;
