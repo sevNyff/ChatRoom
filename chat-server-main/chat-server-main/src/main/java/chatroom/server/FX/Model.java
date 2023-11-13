@@ -104,4 +104,64 @@ public class Model {
         }
     }
 
+    public String loginAndGetToken(String username, String password) {
+        String loginEndpoint = "http://" + this.serverAddress + ":" + this.serverPort + "/user/login";
+
+        try {
+            // Construct the login URL (replace with your actual login endpoint)
+
+            URL url = new URL(loginEndpoint);
+
+            // Create the HTTP connection
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            // Construct the JSON payload for login (replace with your actual format)
+            String jsonInputString = "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
+
+            // Set up the connection for output (i.e., sending the JSON payload)
+            connection.setDoOutput(true);
+
+            // Write the JSON payload to the connection
+            connection.getOutputStream().write(jsonInputString.getBytes("UTF-8"));
+
+            // Get the HTTP response code
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // Read the token from the response (replace with your actual token extraction)
+                String token = extractTokenFromResponse(connection);
+
+                // Close the connection
+                connection.disconnect();
+
+                return token;
+            } else {
+                // Handle login failure (display an error message, etc.)
+                System.out.println("Login failed. HTTP Response Code: " + responseCode);
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception if needed
+            return null;
+        }
+    }
+
+    private String extractTokenFromResponse(HttpURLConnection connection) throws IOException {
+        // Read the response from the connection
+        StringBuilder response = new StringBuilder();
+        try (var reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+        }
+
+        // Parse the response to get the token (replace with your actual token extraction)
+        JSONObject json = new JSONObject(response.toString());
+        return json.getString("token");
+    }
+
 }
