@@ -34,7 +34,7 @@ public class LoginWindow {
             Scene scene = new Scene(registerWindow.getGrid(), 300, 150);
             registerStage.setScene(scene);
 
-            // Show the login window
+            // Show the Registration window
             registerStage.show();
         });
 
@@ -48,7 +48,7 @@ public class LoginWindow {
             System.out.println("Username: " + username);
             System.out.println("Password: " + password);
 
-            // Close the login window
+            // Close the Registration window
             ((Stage) submitButton.getScene().getWindow()).close();
         });
 
