@@ -20,11 +20,11 @@ public class View {
     private final Model model;
     private Stage stage;
     protected Label lblNumber;
-    protected HBox topHBox;
-    protected VBox allUsersVBox;
-    protected Label serverAddressLabel, allUsersTitleLabel;
-    protected TextField serverAddressTextField;
-    protected Button serverAddressSetButton, loginWindowButton;
+    protected HBox topHBox, centerBox;
+    protected VBox allUsersVBox, sendChatVBox, receiveChatVBox;
+    protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel, messageLabel;
+    protected TextField serverAddressTextField, sendToTextField, messageTextField;
+    protected Button serverAddressSetButton, loginWindowButton, sendChatButton, receiveChatButton;
 
     public View(Stage stage, Model model) {
         this.model = model;
@@ -51,9 +51,19 @@ public class View {
         pane.setLeft(allUsersVBox);
 
         //Center part of the application
-        lblNumber = new Label();
-        lblNumber.setText("Hello");
-        pane.setCenter(lblNumber);
+        centerBox = new HBox();
+        sendChatVBox = new VBox();
+        sendToLabel = new Label("Send To:");
+        sendToTextField = new TextField();
+        messageLabel = new Label("Message:");
+        messageTextField = new TextField();
+        sendChatButton = new Button("Send");
+        sendChatVBox.getChildren().addAll(sendToLabel, sendToTextField, messageLabel, messageTextField, sendChatButton);
+        receiveChatVBox = new VBox();
+        receiveChatButton = new Button("New Messages");
+        receiveChatVBox.getChildren().addAll(receiveChatButton);
+        centerBox.getChildren().addAll(sendChatVBox, receiveChatVBox);
+        pane.setCenter(centerBox);
 
         // Set action for the "Set Server" button
         serverAddressSetButton.setOnAction(event -> onSetServerClicked());
@@ -96,6 +106,7 @@ public class View {
         } catch (NumberFormatException e) {
             showAlert("Invalid port number!");
         }
+        updateUsersList(model.fetchUsersFromServer());
     }
 
     private void showAlert(String message) {

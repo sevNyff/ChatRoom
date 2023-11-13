@@ -16,7 +16,7 @@ public class RegisterWindow {
 
     public RegisterWindow() {
         grid = new GridPane();
-        grid.setPadding(new Insets(20, 20, 20, 20));
+        grid.setPadding(new Insets(20));
         grid.setVgap(10);
         grid.setHgap(10);
 

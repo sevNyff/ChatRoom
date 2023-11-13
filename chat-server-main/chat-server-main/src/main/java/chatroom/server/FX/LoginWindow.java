@@ -13,7 +13,7 @@ public class LoginWindow {
 
     public LoginWindow() {
         grid = new GridPane();
-        grid.setPadding(new Insets(20, 20, 20, 20));
+        grid.setPadding(new Insets(20));
         grid.setVgap(10);
         grid.setHgap(10);
 
@@ -24,7 +24,7 @@ public class LoginWindow {
         Label passwordLabel = new Label("Password:");
         PasswordField passwordField = new PasswordField();
 
-        Button registerButton = new Button("Register");
+        Button registerButton = new Button("Register now");
         registerButton.setOnAction(event -> {
             Stage registerStage = new Stage();
             registerStage.setTitle("Register Window");
