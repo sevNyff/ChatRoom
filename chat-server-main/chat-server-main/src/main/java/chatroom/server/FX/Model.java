@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -162,6 +163,49 @@ public class Model {
         // Parse the response to get the token (replace with your actual token extraction)
         JSONObject json = new JSONObject(response.toString());
         return json.getString("token");
+    }
+
+    public boolean registerUser(String username, String password) {
+        String registerEndpoint = "http://" + this.serverAddress + ":" + this.serverPort + "/user/register";
+
+        try {
+            // Construct the registration URL (replace with your actual registration endpoint)
+            URL url = new URL(registerEndpoint);
+
+            // Create the HTTP connection
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            // Construct the JSON payload for registration (replace with your actual format)
+            String jsonInputString = "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
+
+            // Set up the connection for output (i.e., sending the JSON payload)
+            connection.setDoOutput(true);
+
+            // Write the JSON payload to the connection
+            try (OutputStream os = connection.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("UTF-8");
+                os.write(input, 0, input.length);
+            }
+
+            // Get the HTTP response code
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // Registration successful
+                System.out.println("User registered successfully!");
+                return true;
+            } else {
+                // Handle registration failure (display an error message, etc.)
+                System.out.println("User registration failed. HTTP Response Code: " + responseCode);
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception if needed
+            return false;
+        }
     }
 
 }

@@ -12,9 +12,11 @@ import javafx.stage.Stage;
 
 public class RegisterWindow {
 
+    private final Model model;
     private GridPane grid;
 
-    public RegisterWindow() {
+    public RegisterWindow(Model model) {
+        this.model = model;
         grid = new GridPane();
         grid.setPadding(new Insets(20));
         grid.setVgap(10);
@@ -37,8 +39,15 @@ public class RegisterWindow {
             System.out.println("Username: " + username);
             System.out.println("Password: " + password);
 
-            // Close the login window
-            ((Stage) submitButton.getScene().getWindow()).close();
+            boolean registrationSuccess = model.registerUser(username, password);
+
+            if (registrationSuccess) {
+                // Close the registration window or navigate to the next screen
+                ((Stage) submitButton.getScene().getWindow()).close();
+            } else {
+                System.out.println("User registration failed.");
+                // Handle registration failure (display an error message, etc.)
+            }
         });
 
         // Add components to the GridPane

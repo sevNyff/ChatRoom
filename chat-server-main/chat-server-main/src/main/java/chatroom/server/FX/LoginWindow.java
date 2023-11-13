@@ -12,6 +12,7 @@ import org.json.JSONException;
 public class LoginWindow {
 
     private final Model model;
+    private String token;
 
     private GridPane grid;
 
@@ -35,7 +36,7 @@ public class LoginWindow {
             Stage registerStage = new Stage();
             registerStage.setTitle("Register Window");
 
-            RegisterWindow registerWindow = new RegisterWindow();
+            RegisterWindow registerWindow = new RegisterWindow(this.model);
 
             Scene scene = new Scene(registerWindow.getGrid(), 300, 150);
             registerStage.setScene(scene);
@@ -69,7 +70,6 @@ public class LoginWindow {
                     // Handle login failure (display an error message, etc.)
                     System.out.println("Login failed. Please check your credentials.");
                 }
-
             } catch (JSONException e){
                 System.out.println("Login failed. Please check your credentials.");
                 showAlert("Login failed. Please check your credentials.");
@@ -89,6 +89,10 @@ public class LoginWindow {
 
     public GridPane getGrid() {
         return grid;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     private void showAlert(String message) {
