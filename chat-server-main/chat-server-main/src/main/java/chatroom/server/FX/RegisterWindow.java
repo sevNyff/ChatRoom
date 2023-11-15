@@ -30,6 +30,7 @@ public class RegisterWindow {
         PasswordField passwordField = new PasswordField();
 
         Button submitButton = new Button("Submit");
+
         submitButton.setOnAction(event -> {
             // You can perform login validation here
 
@@ -56,6 +57,8 @@ public class RegisterWindow {
         grid.add(passwordLabel, 0, 1);
         grid.add(passwordField, 1, 1);
         grid.add(submitButton, 1, 2);
+
+
     }
 
     public GridPane getGrid() {

@@ -41,6 +41,8 @@ public class LoginWindow {
             RegisterWindow registerWindow = new RegisterWindow(this.model);
 
             Scene scene = new Scene(registerWindow.getGrid(), 300, 150);
+            String css = getClass().getResource("/styles.css").toExternalForm();
+            scene.getStylesheets().add(css);
             registerStage.setScene(scene);
 
             // Show the login window
@@ -91,6 +93,8 @@ public class LoginWindow {
         grid.add(passwordField, 1, 1);
         grid.add(registerButton, 1,2);
         grid.add(submitButton, 1, 3);
+
+
     }
 
     private void onSuccessfulLogin(String token) {

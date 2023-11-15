@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
 public class View {
     private final Model model;
     private Stage stage;
-    protected Label lblNumber;
+    private static final String cssStyles = "/Users/Kevin/Desktop/styles.css";
     protected HBox topHBox, centerBox;
     protected VBox allUsersVBox, sendChatVBox, receiveChatVBox;
     protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel, messageLabel;
@@ -41,6 +42,7 @@ public class View {
         loginWindowButton = new Button(("Login"));
         logoutButton = new Button("Logout");
         logoutButton.setDisable(true);
+        logoutButton.getStyleClass().add("logout-button");
         topHBox.getChildren().addAll(serverAddressLabel, serverAddressTextField, serverAddressSetButton,
                 loginWindowButton, logoutButton);
         pane.setTop(topHBox);
@@ -78,6 +80,8 @@ public class View {
         logoutButton.setOnAction(event -> onLogoutClicked());
 
         Scene scene = new Scene(pane, 800, 600);
+        String css = getClass().getResource("/styles.css").toExternalForm();
+        scene.getStylesheets().add(css);
         stage.setScene(scene);
     }
 
@@ -190,6 +194,8 @@ public class View {
         LoginWindow loginWindow = new LoginWindow(this.model, this);
 
         Scene scene = new Scene(loginWindow.getGrid(), 300, 200);
+        String css = getClass().getResource("/styles.css").toExternalForm();
+        scene.getStylesheets().add(css);
         loginStage.setScene(scene);
 
         // Show the login window
