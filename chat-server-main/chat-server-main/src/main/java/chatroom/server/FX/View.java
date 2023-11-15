@@ -63,6 +63,7 @@ public class View {
         sendChatVBox.getChildren().addAll(sendToLabel, sendToTextField, messageLabel, messageTextField, sendChatButton);
         receiveChatVBox = new VBox();
         receiveChatButton = new Button("New Messages");
+        chatTextArea = new TextArea();
         receiveChatVBox.getChildren().addAll(receiveChatButton, chatTextArea);
         centerBox.getChildren().addAll(sendChatVBox, receiveChatVBox);
         pane.setCenter(centerBox);
