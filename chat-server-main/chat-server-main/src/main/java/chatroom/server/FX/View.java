@@ -2,10 +2,7 @@ package chatroom.server.FX;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,6 +23,8 @@ public class View {
     protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel, messageLabel;
     protected TextField serverAddressTextField, sendToTextField, messageTextField;
     protected Button serverAddressSetButton, loginWindowButton, sendChatButton, receiveChatButton, logoutButton;
+
+    private TextArea chatTextArea;
 
     public View(Stage stage, Model model) {
         this.model = model;
@@ -64,7 +63,7 @@ public class View {
         sendChatVBox.getChildren().addAll(sendToLabel, sendToTextField, messageLabel, messageTextField, sendChatButton);
         receiveChatVBox = new VBox();
         receiveChatButton = new Button("New Messages");
-        receiveChatVBox.getChildren().addAll(receiveChatButton);
+        receiveChatVBox.getChildren().addAll(receiveChatButton, chatTextArea);
         centerBox.getChildren().addAll(sendChatVBox, receiveChatVBox);
         pane.setCenter(centerBox);
 
@@ -85,6 +84,14 @@ public class View {
         List<String> receivedMessages = model.pollMessages();
         // Process receivedMessages as needed (e.g., display in the UI)
         // For example, you can add them to a TextArea or ListView in your UI.
+        Platform.runLater(() -> {
+            // Process receivedMessages as needed (e.g., display in the UI)
+            // For example, you can add them to a TextArea or ListView in your UI.
+            for (String message : receivedMessages) {
+                System.out.println("Received Message: " + message);
+                chatTextArea.appendText(message + "\n"); // Append the message to the TextArea
+            }
+        });
         System.out.println("Received Messages: " + receivedMessages);
     }
 
