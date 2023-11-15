@@ -270,5 +270,129 @@ public class Model {
             }
        }
     }
+    public boolean sendMessage(String receiver, String message) {
+        try {
+            // Token aus dem Model abrufen
+            String token = getUserToken();
+            //String token = "2338FC763A6B189428F8D6125B03E769";
+
+            // Überprüfen, ob der Benutzer eingeloggt ist
+            if (token == null || token.isEmpty()) {
+                System.out.println("You need to log in first.");
+                return false;
+            }
+
+            // Serveradresse für die Nachricht
+            String sendMessageEndpoint = "http://" + this.serverAddress + ":" + this.serverPort + "/chat/send";
+
+            // JSON-Payload für die Nachricht erstellen
+            String jsonInputString = String.format("{\"token\": \"%s\", \"username\": \"%s\", \"message\": \"%s\"}",
+                    token, receiver, message);
+
+            // URL und Verbindung erstellen
+            URL url = new URL(sendMessageEndpoint);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+
+
+            // JSON-Payload an die Verbindung schreiben
+            try (OutputStream os = connection.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("UTF-8");
+                os.write(input, 0, input.length);
+            }
+
+            // HTTP-Antwortcode abrufen
+            int responseCode = connection.getResponseCode();
+            System.out.println("Response code: " + responseCode); //For debugging
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // Nachricht erfolgreich gesendet
+                System.out.println("Message sent successfully!");
+                return true;
+            } else {
+                // Nachrichtsendung fehlgeschlagen
+                System.out.println("Message sending failed. HTTP Response Code: " + responseCode);
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Fehler bei der Nachrichtenübermittlung
+            System.out.println("Message sending failed due to an exception: " + e.getMessage());
+            return false;
+        }
+    }
+    public List<String> pollMessages() {
+        if (!isLoggedIn()) {
+            // If the user is not logged in, return an empty list
+            return new ArrayList<>();
+        }
+
+        try {
+            String pollEndpoint = "http://" + this.serverAddress + ":" + this.serverPort + "/chat/poll";
+            URL url = new URL(pollEndpoint);
+
+            // Create the HTTP connection
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            // Construct the JSON payload for polling messages
+            String jsonInputString = "{\"token\": \"" + userToken + "\"}";
+
+            // Set up the connection for output (i.e., sending the JSON payload)
+            connection.setDoOutput(true);
+
+            // Write the JSON payload to the connection
+            try (OutputStream os = connection.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("UTF-8");
+                os.write(input, 0, input.length);
+            }
+
+            // Get the HTTP response code
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // Read the response
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+
+                // Parse the response to get the list of messages
+                return parseMessageList(response.toString());
+            } else {
+                System.out.println("Error: " + responseCode);
+                // Handle error if needed
+                return new ArrayList<>(); // Return an empty list in case of an error
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception if needed
+            return new ArrayList<>(); // Return an empty list in case of an exception
+        }
+    }
+
+    private List<String> parseMessageList(String response) {
+        try {
+            JSONObject json = new JSONObject(response);
+            JSONArray messages = json.getJSONArray("messages");
+
+            List<String> messageList = new ArrayList<>();
+            for (int i = 0; i < messages.length(); i++) {
+                messageList.add(messages.getString(i));
+            }
+            return messageList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            // Handle JSON parsing exception if needed
+            return new ArrayList<>(); // Return an empty list in case of an exception
+        }
+    }
+
 
 }

@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -72,10 +73,48 @@ public class View {
         // Set action for the "Set Server" button
         serverAddressSetButton.setOnAction(event -> onSetServerClicked());
         loginWindowButton.setOnAction(event -> showLoginWindow());
+        sendChatButton.setOnAction(event -> onSendButtonClicked());
+        receiveChatButton.setOnAction(event -> onReceiveChatClicked());
         logoutButton.setOnAction(event -> onLogoutClicked());
 
         Scene scene = new Scene(pane, 800, 600);
         stage.setScene(scene);
+    }
+
+    private void onReceiveChatClicked() {
+        List<String> receivedMessages = model.pollMessages();
+        // Process receivedMessages as needed (e.g., display in the UI)
+        // For example, you can add them to a TextArea or ListView in your UI.
+        System.out.println("Received Messages: " + receivedMessages);
+    }
+
+    private void onSendButtonClicked() {
+        String receiver = sendToTextField.getText();
+        String message = messageTextField.getText();
+
+        // Überprüfen Sie, ob Empfänger und Nachricht nicht leer sind
+        if (receiver.isEmpty() || message.isEmpty()) {
+            showAlert("Receiver and message cannot be empty.");
+            return;
+        }
+
+        // Nachricht senden
+        boolean messageSent = model.sendMessage(receiver, message);
+
+        if (messageSent) {
+            // Optional: Fügen Sie hier Code hinzu, um die Nachricht lokal in Ihrem Chatfenster anzuzeigen
+            // ...
+
+            // Erfolgreiche Nachrichtenübermittlung: Erfolgsmeldung anzeigen
+            showAlert("Message sent successfully!");
+        } else {
+            // Nachrichtenübermittlung fehlgeschlagen: Fehlermeldung anzeigen
+            showAlert("Message sending failed.");
+        }
+
+        // Clear the text fields after sending the message
+        sendToTextField.clear();
+        messageTextField.clear();
     }
 
     public void start() {
