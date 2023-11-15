@@ -380,19 +380,30 @@ public class Model {
     private List<String> parseMessageList(String response) {
         try {
             JSONObject json = new JSONObject(response);
-            JSONArray messages = json.getJSONArray("messages");
 
-            List<String> messageList = new ArrayList<>();
-            for (int i = 0; i < messages.length(); i++) {
-                messageList.add(messages.getString(i));
+            if (json.has("messages")) {
+                JSONArray messages = json.getJSONArray("messages");
+
+                List<String> messageList = new ArrayList<>();
+                for (int i = 0; i < messages.length(); i++) {
+                    JSONObject messageObject = messages.getJSONObject(i);
+                    String username = messageObject.getString("username");
+                    String message = messageObject.getString("message");
+                    messageList.add(username + ": " + message);
+                }
+                return messageList;
+            } else {
+                // Handle the case where the "messages" array is not present in the response
+                System.out.println("No messages array in the response");
+                return new ArrayList<>();
             }
-            return messageList;
         } catch (JSONException e) {
             e.printStackTrace();
             // Handle JSON parsing exception if needed
             return new ArrayList<>(); // Return an empty list in case of an exception
         }
     }
+
 
 
 }
