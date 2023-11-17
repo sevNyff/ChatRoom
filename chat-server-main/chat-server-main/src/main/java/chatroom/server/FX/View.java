@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,12 +24,14 @@ public class View {
     protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel;
     protected TextField serverAddressTextField, newChatTextField;
     protected Button serverAddressSetButton, loginWindowButton, logoutButton, newChatButton;
+    protected HashMap<String, String> chats;
 
 
     public View(Stage stage, Model model) {
         this.model = model;
         this.stage = stage;
         stage.setTitle("Chat Room");
+        chats = new HashMap<>();
 
         BorderPane pane = new BorderPane();
 
@@ -93,6 +96,7 @@ public class View {
         Button button = new Button();
         String name = newChatTextField.getText();
         button.setText(name);
+        chats.put(name, "");
 
         sendChatVBox.getChildren().add(button);
 
@@ -104,15 +108,27 @@ public class View {
             messageTextField.setPromptText("New message");
             Button sendChatButton = new Button("Send");
             sendBox.getChildren().addAll(messageTextField, sendChatButton);
-            TextArea chatTextArea = new TextArea();
+            TextArea chatTextArea = new TextArea(chats.get(name));
             chatTextArea.setEditable(false);
             receiveChatVBox.getChildren().clear();
             receiveChatVBox.getChildren().addAll(receiverName, receiveChatButton, chatTextArea, sendBox);
 
             sendChatButton.setOnAction(event -> {
                 chatTextArea.appendText(onSendButtonClicked(name, messageTextField.getText()+ "\n"));
+                chats.replace(name, chatTextArea.getText());
             });
-            receiveChatButton.setOnAction(event -> onReceiveChatClicked());
+            receiveChatButton.setOnAction(event -> {
+
+                List<String> receivedMessages = model.pollMessages();
+                Platform.runLater(() -> {
+                    for (String message : receivedMessages) {
+                        System.out.println("Received Message: " + message);
+                        chatTextArea.appendText("From " + message + "\n");
+                        chats.replace(name, chatTextArea.getText());
+                    }
+                });
+                System.out.println("Received Messages: " + receivedMessages);
+            });
             //receiver im model setzen mit namen vom button
 
 
@@ -120,28 +136,6 @@ public class View {
         });
 
 
-    }
-    private void createMessageField(String name){
-        HBox sendBox = new HBox();
-        Label receiverName = new Label(name);
-        TextField messageTextField = new TextField();
-        messageTextField.setPromptText("New message");
-        Button sendChatButton = new Button("Send");
-        sendBox.getChildren().addAll(messageTextField, sendChatButton);
-        TextArea chatTextArea = new TextArea();
-        chatTextArea.setEditable(false);
-        receiveChatVBox.getChildren().addAll(receiverName, chatTextArea, sendBox);
-    }
-
-    private void onReceiveChatClicked() {
-        List<String> receivedMessages = model.pollMessages();
-        Platform.runLater(() -> {
-            for (String message : receivedMessages) {
-                System.out.println("Received Message: " + message);
-                //chatTextArea.appendText("From " + message + "\n");
-            }
-        });
-        System.out.println("Received Messages: " + receivedMessages);
     }
 
     private String onSendButtonClicked(String name, String inputMessage) {
