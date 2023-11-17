@@ -23,7 +23,7 @@ public class Model {
 
     public Model() {
         // Set default server address and port
-        this.serverAddress = "javaprojects.ch";
+        this.serverAddress = "127.0.0.1";
         this.serverPort = 50001;
     }
 
