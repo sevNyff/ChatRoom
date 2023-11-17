@@ -22,13 +22,7 @@ public class Model {
     private int serverPort;
     private String userToken;
 
-    public HashMap<String, String> getChats() {
-        return chats;
-    }
 
-    public void setChats(HashMap<String, String> chats) {
-        this.chats = chats;
-    }
 
     private HashMap<String, String> chats;
 
@@ -39,6 +33,13 @@ public class Model {
         this.serverAddress = "127.0.0.1";
         this.serverPort = 50001;
         this.chats = new HashMap<>();
+    }
+    public HashMap<String, String> getChats() {
+        return chats;
+    }
+
+    public void setChats(HashMap<String, String> chats) {
+        this.chats = chats;
     }
 
     public String getUserToken() {

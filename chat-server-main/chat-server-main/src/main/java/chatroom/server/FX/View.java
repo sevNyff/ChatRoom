@@ -84,7 +84,10 @@ public class View {
 
 
         logoutButton.setOnAction(event -> onLogoutClicked());
-        newChatButton.setOnAction(event -> setupNewChat());
+        newChatButton.setOnAction(event -> {
+            setupNewChat();
+            newChatTextField.clear();
+        });
 
         Scene scene = new Scene(pane, 800, 600);
         String css = getClass().getResource("/styles.css").toExternalForm();
@@ -116,6 +119,7 @@ public class View {
             sendChatButton.setOnAction(event -> {
                 chatTextArea.appendText(onSendButtonClicked(name, messageTextField.getText()+ "\n"));
                 chats.replace(name, chatTextArea.getText());
+                messageTextField.clear();
             });
             receiveChatButton.setOnAction(event -> {
 
