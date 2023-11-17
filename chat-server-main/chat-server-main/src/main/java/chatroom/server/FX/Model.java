@@ -238,7 +238,7 @@ public class Model {
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
 
-                String jsonInputString = "{\"username\": \"" + userToken + "\"}";
+                String jsonInputString = "{\"token\": \"" + userToken + "\"}";
 
                 // Set up the connection for output (i.e., sending the JSON payload)
                 connection.setDoOutput(true);
