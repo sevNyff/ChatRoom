@@ -22,7 +22,6 @@ public class RegisterWindow {
         grid.setVgap(10);
         grid.setHgap(10);
 
-        // Create labels, text fields, and a button for the login window
         Label usernameLabel = new Label("Username:");
         TextField usernameField = new TextField();
 
@@ -32,9 +31,6 @@ public class RegisterWindow {
         Button submitButton = new Button("Submit");
 
         submitButton.setOnAction(event -> {
-            // You can perform login validation here
-
-            // For demonstration, let's just print the credentials
             String username = usernameField.getText();
             String password = passwordField.getText();
             System.out.println("Username: " + username);
@@ -43,15 +39,11 @@ public class RegisterWindow {
             boolean registrationSuccess = model.registerUser(username, password);
 
             if (registrationSuccess) {
-                // Close the registration window or navigate to the next screen
                 ((Stage) submitButton.getScene().getWindow()).close();
             } else {
                 System.out.println("User registration failed.");
-                // Handle registration failure (display an error message, etc.)
             }
         });
-
-        // Add components to the GridPane
         grid.add(usernameLabel, 0, 0);
         grid.add(usernameField, 1, 0);
         grid.add(passwordLabel, 0, 1);

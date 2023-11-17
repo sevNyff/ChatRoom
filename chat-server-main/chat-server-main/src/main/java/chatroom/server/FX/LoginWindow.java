@@ -26,7 +26,6 @@ public class LoginWindow {
         grid.setVgap(10);
         grid.setHgap(10);
 
-        // Create labels, text fields, and a button for the login window
         Label usernameLabel = new Label("Username:");
         TextField usernameField = new TextField();
 
@@ -45,48 +44,34 @@ public class LoginWindow {
             scene.getStylesheets().add(css);
             registerStage.setScene(scene);
 
-            // Show the login window
             registerStage.show();
         });
 
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(event -> {
-            // You can perform login validation here
-
-            // For demonstration, let's just print the credentials
             String username = usernameField.getText();
             String password = passwordField.getText();
             System.out.println("Username: " + username);
             System.out.println("Password: " + password);
 
             try {
-                // Assuming you have a method in your Model class to perform login and get the token
                 String token = model.loginAndGetToken(username, password);
-
-
                 if (token != null && !token.isEmpty()) {
-                    // Store the token securely (e.g., in a variable or secure storage)
-                    // You can now use this token for subsequent requests to the server
                     System.out.println("Login successful. Token: " + token);
                     setToken(token);
                     onSuccessfulLogin(token);
-
-                    // Close the login window
                     ((Stage) submitButton.getScene().getWindow()).close();
                 } else {
-                    // Handle login failure (display an error message, etc.)
                     System.out.println("Login failed. Please check your credentials.");
                 }
             } catch (JSONException e){
                 System.out.println("Login failed. Please check your credentials.");
                 showAlert("Login failed. Please check your credentials.");
             }
-            // Close the login window
             ((Stage) submitButton.getScene().getWindow()).close();
         });
 
 
-        // Add components to the GridPane
         grid.add(usernameLabel, 0, 0);
         grid.add(usernameField, 1, 0);
         grid.add(passwordLabel, 0, 1);
@@ -98,7 +83,6 @@ public class LoginWindow {
     }
 
     private void onSuccessfulLogin(String token) {
-        // Notify the View about the successful login
         view.onSuccessfulLogin(token);
     }
     public GridPane getGrid() {

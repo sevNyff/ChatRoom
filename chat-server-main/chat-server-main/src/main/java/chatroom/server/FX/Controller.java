@@ -24,12 +24,9 @@ public class Controller {
         try {
             int port = Integer.parseInt(getPortNumberFromTextField());
             String serverAddress = getServerAddressFromTextField();
-
-            // Print statements for debugging
             System.out.println("Server Address: " + serverAddress);
             System.out.println("Port: " + port);
 
-            // Send ping to confirm connection
             if (model.pingServer(serverAddress, port)) {
                 Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Ping successful!", ButtonType.OK);

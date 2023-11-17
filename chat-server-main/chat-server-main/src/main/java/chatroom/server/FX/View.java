@@ -87,14 +87,10 @@ public class View {
 
     private void onReceiveChatClicked() {
         List<String> receivedMessages = model.pollMessages();
-        // Process receivedMessages as needed (e.g., display in the UI)
-        // For example, you can add them to a TextArea or ListView in your UI.
         Platform.runLater(() -> {
-            // Process receivedMessages as needed (e.g., display in the UI)
-            // For example, you can add them to a TextArea or ListView in your UI.
             for (String message : receivedMessages) {
                 System.out.println("Received Message: " + message);
-                chatTextArea.appendText("From " + message + "\n"); // Append the message to the TextArea
+                chatTextArea.appendText("From " + message + "\n");
             }
         });
         System.out.println("Received Messages: " + receivedMessages);
@@ -104,27 +100,19 @@ public class View {
         String receiver = sendToTextField.getText();
         String message = messageTextField.getText();
 
-        // Überprüfen Sie, ob Empfänger und Nachricht nicht leer sind
         if (receiver.isEmpty() || message.isEmpty()) {
             showAlert("Receiver and message cannot be empty.");
             return;
         }
-
-        // Nachricht senden
         boolean messageSent = model.sendMessage(receiver, message);
 
         if (messageSent) {
             String myMessage = "To " + receiver + ": " + message;
             chatTextArea.appendText(myMessage + "\n");
-
-            // Erfolgreiche Nachrichtenübermittlung: Erfolgsmeldung anzeigen
             showAlertMessage("Message sent successfully!");
         } else {
-            // Nachrichtenübermittlung fehlgeschlagen: Fehlermeldung anzeigen
             showAlert("Message sending failed.");
         }
-
-        // Clear the text fields after sending the message
         sendToTextField.clear();
         messageTextField.clear();
     }
@@ -139,9 +127,7 @@ public class View {
 
     public void updateUsersList(List<String> userList) {
         Platform.runLater(() -> {
-            allUsersVBox.getChildren().clear(); // Clear existing content
-
-            // Add the updated user list
+            allUsersVBox.getChildren().clear();
             allUsersVBox.getChildren().addAll(allUsersTitleLabel);
             for (String user : userList) {
                 Label userLabel = new Label(user);
@@ -171,10 +157,8 @@ public class View {
     }
 
     private void onLogoutClicked() {
-        // Perform logout actions
-        // For example, clear the token or perform any other necessary cleanup
-        model.logout(); // You need to implement the logout method in your Model class
-        updateLogoutButton(false); // Disable the logout button
+        model.logout();
+        updateLogoutButton(false);
         showAlertMessage("You are logged out!");
     }
 
@@ -198,13 +182,10 @@ public class View {
         scene.getStylesheets().add(css);
         loginStage.setScene(scene);
 
-        // Show the login window
         loginStage.show();
         }
     public void onSuccessfulLogin(String token) {
-        // Update the UI or perform actions when a successful login occurs
-        // For example, enable the logout button and perform any other necessary tasks
-        updateLogoutButton(true); // Enable the logout button
+        updateLogoutButton(true);
     }
 
 }
