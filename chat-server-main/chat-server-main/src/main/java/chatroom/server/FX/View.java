@@ -22,7 +22,7 @@ public class View {
     protected VBox allUsersVBox, sendChatVBox, receiveChatVBox;
     protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel;
     protected TextField serverAddressTextField, newChatTextField;
-    protected Button serverAddressSetButton, loginWindowButton, receiveChatButton, logoutButton, newChatButton;
+    protected Button serverAddressSetButton, loginWindowButton, logoutButton, newChatButton;
 
 
     public View(Stage stage, Model model) {
@@ -65,7 +65,7 @@ public class View {
 
         //Right part of the application
         receiveChatVBox = new VBox();
-        receiveChatButton = new Button("Reload");
+        //receiveChatButton = new Button("Reload");
 
         //Hier einfügen
 
@@ -79,7 +79,7 @@ public class View {
         serverAddressSetButton.setOnAction(event -> onSetServerClicked());
         loginWindowButton.setOnAction(event -> showLoginWindow());
 
-        receiveChatButton.setOnAction(event -> onReceiveChatClicked());
+
         logoutButton.setOnAction(event -> onLogoutClicked());
         newChatButton.setOnAction(event -> setupNewChat());
 
@@ -99,15 +99,20 @@ public class View {
         button.setOnAction(e -> {
             HBox sendBox = new HBox();
             Label receiverName = new Label(name);
+            Button receiveChatButton = new Button("Reload");
             TextField messageTextField = new TextField();
             messageTextField.setPromptText("New message");
             Button sendChatButton = new Button("Send");
             sendBox.getChildren().addAll(messageTextField, sendChatButton);
             TextArea chatTextArea = new TextArea();
             chatTextArea.setEditable(false);
+
             receiveChatVBox.getChildren().addAll(receiverName, receiveChatButton, chatTextArea, sendBox);
 
-            sendChatButton.setOnAction(event -> onSendButtonClicked(name));
+            sendChatButton.setOnAction(event -> {
+                chatTextArea.appendText(onSendButtonClicked(name, messageTextField.getText()+ "\n"));
+            });
+            receiveChatButton.setOnAction(event -> onReceiveChatClicked());
             //receiver im model setzen mit namen vom button
 
 
@@ -125,7 +130,7 @@ public class View {
         sendBox.getChildren().addAll(messageTextField, sendChatButton);
         TextArea chatTextArea = new TextArea();
         chatTextArea.setEditable(false);
-        receiveChatVBox.getChildren().addAll(receiverName, receiveChatButton, chatTextArea, sendBox);
+        receiveChatVBox.getChildren().addAll(receiverName, chatTextArea, sendBox);
     }
 
     private void onReceiveChatClicked() {
@@ -139,25 +144,27 @@ public class View {
         System.out.println("Received Messages: " + receivedMessages);
     }
 
-    private void onSendButtonClicked(String name) {
-        String receiver = newChatTextField.getText();
-        String message = name; //receiver vom model holen
+    private String onSendButtonClicked(String name, String inputMessage) {
+        String receiver = name;
+        String message = inputMessage; //receiver vom model holen
 
         if (receiver.isEmpty() || message.isEmpty()) {
             showAlert("Receiver and message cannot be empty.");
-            return;
+            return null;
         }
         boolean messageSent = model.sendMessage(receiver, message);
 
         if (messageSent) {
             String myMessage = "To " + receiver + ": " + message;
-            chatTextArea.appendText(myMessage + "\n");
+
             showAlertMessage("Message sent successfully!");
+            return myMessage;
         } else {
             showAlert("Message sending failed.");
+            return null;
         }
-        newChatTextField.clear();
-        messageTextField.clear();
+
+
     }
 
     public void start() {
