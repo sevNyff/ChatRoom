@@ -94,7 +94,7 @@ public class View {
             // For example, you can add them to a TextArea or ListView in your UI.
             for (String message : receivedMessages) {
                 System.out.println("Received Message: " + message);
-                chatTextArea.appendText(message + "\n"); // Append the message to the TextArea
+                chatTextArea.appendText("From " + message + "\n"); // Append the message to the TextArea
             }
         });
         System.out.println("Received Messages: " + receivedMessages);
@@ -114,8 +114,8 @@ public class View {
         boolean messageSent = model.sendMessage(receiver, message);
 
         if (messageSent) {
-            // Optional: Fügen Sie hier Code hinzu, um die Nachricht lokal in Ihrem Chatfenster anzuzeigen
-            // ...
+            String myMessage = "To " + receiver + ": " + message;
+            chatTextArea.appendText(myMessage + "\n");
 
             // Erfolgreiche Nachrichtenübermittlung: Erfolgsmeldung anzeigen
             showAlertMessage("Message sent successfully!");
