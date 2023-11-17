@@ -118,7 +118,7 @@ public class View {
             // ...
 
             // Erfolgreiche Nachrichtenübermittlung: Erfolgsmeldung anzeigen
-            showAlert("Message sent successfully!");
+            showAlertMessage("Message sent successfully!");
         } else {
             // Nachrichtenübermittlung fehlgeschlagen: Fehlermeldung anzeigen
             showAlert("Message sending failed.");
