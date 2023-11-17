@@ -21,6 +21,8 @@ public class Model {
     private int serverPort;
     public String userToken;
 
+    private String receiver;
+
     public Model() {
         // Set default server address and port
         this.serverAddress = "javaprojects.ch";

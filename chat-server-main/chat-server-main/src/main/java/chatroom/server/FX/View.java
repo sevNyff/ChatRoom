@@ -18,14 +18,12 @@ import java.util.logging.Logger;
 public class View {
     private final Model model;
     private Stage stage;
-    private static final String cssStyles = "/Users/Kevin/Desktop/styles.css";
-    protected HBox topHBox, centerBox;
+    protected HBox topHBox, centerBox, newChatBox;
     protected VBox allUsersVBox, sendChatVBox, receiveChatVBox;
-    protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel, messageLabel;
-    protected TextField serverAddressTextField, sendToTextField, messageTextField;
-    protected Button serverAddressSetButton, loginWindowButton, sendChatButton, receiveChatButton, logoutButton;
+    protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel;
+    protected TextField serverAddressTextField, newChatTextField;
+    protected Button serverAddressSetButton, loginWindowButton, receiveChatButton, logoutButton, newChatButton;
 
-    private TextArea chatTextArea;
 
     public View(Stage stage, Model model) {
         this.model = model;
@@ -58,15 +56,20 @@ public class View {
         centerBox = new HBox();
         sendChatVBox = new VBox();
         sendToLabel = new Label("Send To:");
-        sendToTextField = new TextField();
-        messageLabel = new Label("Message:");
-        messageTextField = new TextField();
-        sendChatButton = new Button("Send");
-        sendChatVBox.getChildren().addAll(sendToLabel, sendToTextField, messageLabel, messageTextField, sendChatButton);
+        newChatTextField = new TextField();
+        newChatButton = new Button("+");
+        newChatBox = new HBox();
+        newChatBox.getChildren().addAll(newChatTextField, newChatButton);
+
+        sendChatVBox.getChildren().addAll(sendToLabel, newChatBox);
+
+        //Right part of the application
         receiveChatVBox = new VBox();
-        receiveChatButton = new Button("New Messages");
-        chatTextArea = new TextArea();
-        receiveChatVBox.getChildren().addAll(receiveChatButton, chatTextArea);
+        receiveChatButton = new Button("Reload");
+
+        //Hier einfügen
+
+
         centerBox.getChildren().addAll(sendChatVBox, receiveChatVBox);
         pane.setCenter(centerBox);
 
@@ -75,9 +78,10 @@ public class View {
         // Set action for the "Set Server" button
         serverAddressSetButton.setOnAction(event -> onSetServerClicked());
         loginWindowButton.setOnAction(event -> showLoginWindow());
-        sendChatButton.setOnAction(event -> onSendButtonClicked());
+
         receiveChatButton.setOnAction(event -> onReceiveChatClicked());
         logoutButton.setOnAction(event -> onLogoutClicked());
+        newChatButton.setOnAction(event -> setupNewChat());
 
         Scene scene = new Scene(pane, 800, 600);
         String css = getClass().getResource("/styles.css").toExternalForm();
@@ -85,20 +89,59 @@ public class View {
         stage.setScene(scene);
     }
 
+    private void setupNewChat() {
+        Button button = new Button();
+        String name = newChatTextField.getText();
+        button.setText(name);
+
+        sendChatVBox.getChildren().add(button);
+
+        button.setOnAction(e -> {
+            HBox sendBox = new HBox();
+            Label receiverName = new Label(name);
+            TextField messageTextField = new TextField();
+            messageTextField.setPromptText("New message");
+            Button sendChatButton = new Button("Send");
+            sendBox.getChildren().addAll(messageTextField, sendChatButton);
+            TextArea chatTextArea = new TextArea();
+            chatTextArea.setEditable(false);
+            receiveChatVBox.getChildren().addAll(receiverName, receiveChatButton, chatTextArea, sendBox);
+
+            sendChatButton.setOnAction(event -> onSendButtonClicked(name));
+            //receiver im model setzen mit namen vom button
+
+
+
+        });
+
+
+    }
+    private void createMessageField(String name){
+        HBox sendBox = new HBox();
+        Label receiverName = new Label(name);
+        TextField messageTextField = new TextField();
+        messageTextField.setPromptText("New message");
+        Button sendChatButton = new Button("Send");
+        sendBox.getChildren().addAll(messageTextField, sendChatButton);
+        TextArea chatTextArea = new TextArea();
+        chatTextArea.setEditable(false);
+        receiveChatVBox.getChildren().addAll(receiverName, receiveChatButton, chatTextArea, sendBox);
+    }
+
     private void onReceiveChatClicked() {
         List<String> receivedMessages = model.pollMessages();
         Platform.runLater(() -> {
             for (String message : receivedMessages) {
                 System.out.println("Received Message: " + message);
-                chatTextArea.appendText("From " + message + "\n");
+                //chatTextArea.appendText("From " + message + "\n");
             }
         });
         System.out.println("Received Messages: " + receivedMessages);
     }
 
-    private void onSendButtonClicked() {
-        String receiver = sendToTextField.getText();
-        String message = messageTextField.getText();
+    private void onSendButtonClicked(String name) {
+        String receiver = newChatTextField.getText();
+        String message = name; //receiver vom model holen
 
         if (receiver.isEmpty() || message.isEmpty()) {
             showAlert("Receiver and message cannot be empty.");
@@ -113,7 +156,7 @@ public class View {
         } else {
             showAlert("Message sending failed.");
         }
-        sendToTextField.clear();
+        newChatTextField.clear();
         messageTextField.clear();
     }
 
