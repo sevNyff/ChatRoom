@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -19,14 +20,25 @@ public class Model {
 
     private String serverAddress;
     private int serverPort;
-    public String userToken;
+    private String userToken;
 
-    private String receiver;
+    public HashMap<String, String> getChats() {
+        return chats;
+    }
+
+    public void setChats(HashMap<String, String> chats) {
+        this.chats = chats;
+    }
+
+    private HashMap<String, String> chats;
+
+
 
     public Model() {
         // Set default server address and port
         this.serverAddress = "127.0.0.1";
         this.serverPort = 50001;
+        this.chats = new HashMap<>();
     }
 
     public String getUserToken() {
