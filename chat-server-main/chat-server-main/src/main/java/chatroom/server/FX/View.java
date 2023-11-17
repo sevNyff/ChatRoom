@@ -24,14 +24,14 @@ public class View {
     protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel;
     protected TextField serverAddressTextField, newChatTextField;
     protected Button serverAddressSetButton, loginWindowButton, logoutButton, newChatButton;
-
+    protected HashMap<String, String> chats;
 
 
     public View(Stage stage, Model model) {
         this.model = model;
         this.stage = stage;
         stage.setTitle("Chat Room");
-
+        chats = new HashMap<>();
 
         BorderPane pane = new BorderPane();
 
@@ -84,10 +84,7 @@ public class View {
 
 
         logoutButton.setOnAction(event -> onLogoutClicked());
-        newChatButton.setOnAction(event -> {
-            setupNewChat();
-            newChatTextField.clear();
-        });
+        newChatButton.setOnAction(event -> setupNewChat());
 
         Scene scene = new Scene(pane, 800, 600);
         String css = getClass().getResource("/styles.css").toExternalForm();
@@ -99,7 +96,7 @@ public class View {
         Button button = new Button();
         String name = newChatTextField.getText();
         button.setText(name);
-        model.getChats().put(name, "");
+        chats.put(name, "");
 
         sendChatVBox.getChildren().add(button);
 
@@ -111,15 +108,14 @@ public class View {
             messageTextField.setPromptText("New message");
             Button sendChatButton = new Button("Send");
             sendBox.getChildren().addAll(messageTextField, sendChatButton);
-            TextArea chatTextArea = new TextArea(model.getChats().get(name));
+            TextArea chatTextArea = new TextArea(chats.get(name));
             chatTextArea.setEditable(false);
             receiveChatVBox.getChildren().clear();
             receiveChatVBox.getChildren().addAll(receiverName, receiveChatButton, chatTextArea, sendBox);
 
             sendChatButton.setOnAction(event -> {
                 chatTextArea.appendText(onSendButtonClicked(name, messageTextField.getText()+ "\n"));
-                model.getChats().replace(name, chatTextArea.getText());
-                messageTextField.clear();
+                chats.replace(name, chatTextArea.getText());
             });
             receiveChatButton.setOnAction(event -> {
 
@@ -128,7 +124,7 @@ public class View {
                     for (String message : receivedMessages) {
                         System.out.println("Received Message: " + message);
                         chatTextArea.appendText("From " + message + "\n");
-                        model.getChats().replace(name, chatTextArea.getText());
+                        chats.replace(name, chatTextArea.getText());
                     }
                 });
                 System.out.println("Received Messages: " + receivedMessages);
@@ -231,7 +227,7 @@ public class View {
         loginStage.setScene(scene);
 
         loginStage.show();
-        }
+    }
     public void onSuccessfulLogin(String token) {
         updateLogoutButton(true);
     }
