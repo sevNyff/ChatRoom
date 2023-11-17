@@ -1,25 +1,21 @@
 package chatroom.server.FX;
 
-// LoginWindow.java
+
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.scene.control.Alert.AlertType;
 import org.json.JSONException;
 
 public class LoginWindow {
-
-    private final Model model;
-    private final View view;
+    private final Controller controller;
     private String token;
 
     private GridPane grid;
 
-    public LoginWindow(Model model, View view) {
-        this.model = model;
-        this.view = view;
+    public LoginWindow( Controller controller) {
+        this.controller = controller;
 
         grid = new GridPane();
         grid.setPadding(new Insets(20));
@@ -37,7 +33,7 @@ public class LoginWindow {
             Stage registerStage = new Stage();
             registerStage.setTitle("Register Window");
 
-            RegisterWindow registerWindow = new RegisterWindow(this.model);
+            RegisterWindow registerWindow = new RegisterWindow(this.controller);
 
             Scene scene = new Scene(registerWindow.getGrid(), 300, 150);
             String css = getClass().getResource("/styles.css").toExternalForm();
@@ -55,7 +51,7 @@ public class LoginWindow {
             System.out.println("Password: " + password);
 
             try {
-                String token = model.loginAndGetToken(username, password);
+                String token = controller.loginAndGetToken(username, password);
                 if (token != null && !token.isEmpty()) {
                     System.out.println("Login successful. Token: " + token);
                     setToken(token);
@@ -68,6 +64,7 @@ public class LoginWindow {
                 System.out.println("Login failed. Please check your credentials.");
                 showAlert("Login failed. Please check your credentials.");
             }
+            controller.updateUsersList(controller.fetchUsersFromServer());
             ((Stage) submitButton.getScene().getWindow()).close();
         });
 
@@ -83,7 +80,7 @@ public class LoginWindow {
     }
 
     private void onSuccessfulLogin(String token) {
-        view.onSuccessfulLogin(token);
+        controller.onSuccessfulLogin(token);
     }
     public GridPane getGrid() {
         return grid;

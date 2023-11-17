@@ -4,7 +4,7 @@
 .root {
     -fx-alignment: center;
     -fx-padding: 20;
-    -fx-base: #3498db; /* Grundfarbe */
+    -fx-base: #ffffff; /* Grundfarbe */
     -fx-accent: #2ecc71; /* Akzentfarbe */
 }
 

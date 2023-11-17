@@ -12,11 +12,11 @@ import javafx.stage.Stage;
 
 public class RegisterWindow {
 
-    private final Model model;
+    private final Controller controller;
     private GridPane grid;
 
-    public RegisterWindow(Model model) {
-        this.model = model;
+    public RegisterWindow(Controller controller) {
+        this.controller = controller;
         grid = new GridPane();
         grid.setPadding(new Insets(20));
         grid.setVgap(10);
@@ -36,7 +36,7 @@ public class RegisterWindow {
             System.out.println("Username: " + username);
             System.out.println("Password: " + password);
 
-            boolean registrationSuccess = model.registerUser(username, password);
+            boolean registrationSuccess = controller.registerUser(username, password);
 
             if (registrationSuccess) {
                 ((Stage) submitButton.getScene().getWindow()).close();
