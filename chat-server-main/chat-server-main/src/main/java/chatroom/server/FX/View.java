@@ -106,7 +106,7 @@ public class View {
             sendBox.getChildren().addAll(messageTextField, sendChatButton);
             TextArea chatTextArea = new TextArea();
             chatTextArea.setEditable(false);
-
+            receiveChatVBox.getChildren().clear();
             receiveChatVBox.getChildren().addAll(receiverName, receiveChatButton, chatTextArea, sendBox);
 
             sendChatButton.setOnAction(event -> {
