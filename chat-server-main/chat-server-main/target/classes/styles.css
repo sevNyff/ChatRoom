@@ -1,9 +1,11 @@
-/* style.css */
+/* style.css*/
 
 /* Center the content */
 .root {
     -fx-alignment: center;
     -fx-padding: 20;
+    -fx-base: #3498db; /* Grundfarbe */
+    -fx-accent: #2ecc71; /* Akzentfarbe */
 }
 
 /* Style the form container */
@@ -19,6 +21,10 @@
 /* Style labels */
 .label {
     -fx-font-size: 14px;
+}
+
+.label-all-users {
+    -fx-font-weight: bold;
 }
 
 /* Style text fields */
