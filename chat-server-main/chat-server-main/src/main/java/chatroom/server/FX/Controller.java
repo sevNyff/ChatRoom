@@ -5,6 +5,8 @@ import chatroom.server.Server;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.json.JSONArray;
@@ -32,7 +34,11 @@ public class Controller {
         view.serverAddressSetButton.setOnAction(event -> onSetServerClicked());
         // Set action for the buttons
         view.loginWindowButton.setOnAction(event -> showLoginWindow());
-        view.logoutButton.setOnAction(event -> onLogoutClicked());
+        view.logoutButton.setOnAction(event -> {
+            onLogoutClicked();
+            view.topHBox.getChildren().remove(view.logoutButton);
+            view.topHBox.getChildren().add(view.loginWindowButton);
+        });
 
         view.newChatButton.setOnAction(event -> {
             String name = view.newChatTextField.getText();
@@ -89,6 +95,7 @@ public class Controller {
         Button button = new Button();
         //String name = view.newChatTextField.getText();
         button.setText(name);
+        button.getStyleClass().add("chat-button");
         view.chats.put(name, "");
 
         view. sendChatVBox.getChildren().add(button);
@@ -99,9 +106,18 @@ public class Controller {
             Button receiveChatButton = new Button("Reload");
             TextField messageTextField = new TextField();
             messageTextField.setPromptText("New message");
-            Button sendChatButton = new Button("Send");
+            messageTextField.getStyleClass().add("message-tf");
+
+            Image image = new Image("/img.png");
+            ImageView imageView = new ImageView(image);
+            imageView.setFitHeight(15);
+            imageView.setFitWidth(15);
+            Button sendChatButton = new Button();
+            sendChatButton.setGraphic(imageView);
+            sendChatButton.getStyleClass().add("sendChat-button");
             sendBox.getChildren().addAll(messageTextField, sendChatButton);
             TextArea chatTextArea = new TextArea(view.chats.get(name));
+            chatTextArea.getStyleClass().add("chat-ta");
             chatTextArea.setEditable(false);
             view.receiveChatVBox.getChildren().clear();
             view.receiveChatVBox.getChildren().addAll(receiverName, receiveChatButton, chatTextArea, sendBox);
@@ -183,7 +199,7 @@ public class Controller {
 
     private String onSendButtonClicked(String name, String inputMessage) {
         String receiver = name;
-        String message = inputMessage; //receiver vom model holen
+        String message = inputMessage;
 
         if (receiver.isEmpty() || message.isEmpty()) {
             showAlert("Receiver and message cannot be empty.");
@@ -238,7 +254,7 @@ public class Controller {
         Stage loginStage = new Stage();
         loginStage.setTitle("Login Window");
 
-        LoginWindow loginWindow = new LoginWindow(this);
+        LoginWindow loginWindow = new LoginWindow(this, this.view);
 
         Scene scene = new Scene(loginWindow.getGrid(), 300, 200);
         String css = getClass().getResource("/styles.css").toExternalForm();

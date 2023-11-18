@@ -1,62 +1,132 @@
-/* style.css*/
-
-/* Center the content */
-.root {
-    -fx-alignment: center;
-    -fx-padding: 20;
-    -fx-base: #ffffff; /* Grundfarbe */
-    -fx-accent: #2ecc71; /* Akzentfarbe */
-}
-
-/* Style the form container */
-.form-container {
-    -fx-background-color: #f2f2f2; /* Light gray background */
-    -fx-padding: 20;
-    -fx-spacing: 10;
-    -fx-border-color: #ddd; /* Light gray border */
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-}
-
-/* Style labels */
+/* General Styles */
 .label {
     -fx-font-size: 14px;
+    -fx-text-fill: black;
 }
 
-.label-all-users {
+.root {
+    -fx-background-color: white;
+}
+
+.logout-button{
+    -fx-background-color: #fa0202;
+    -fx-text-fill: #801627;
+}
+
+
+
+.allUsers-VBox {
+    -fx-pref-width: 150;
+}
+.chats-VBox {
+    -fx-pref-width: 250;
+}
+
+
+
+
+.allUsers-label {
     -fx-font-weight: bold;
+    -fx-font-size: 20;
 }
 
 /* Style text fields */
 .text-field {
     -fx-font-size: 14px;
-    -fx-pref-width: 200;
+
+}
+.newchat-tf {
+    -fx-pref-width: 154;
 }
 
-/* Style password fields */
-.password-field {
-    -fx-font-size: 14px;
-    -fx-pref-width: 200;
+
+/*Style the login page */
+.grid-pane {
+    -fx-background-color: lightgrey; /* Background color for the GridPane */
+    -fx-padding: 20px;
+    -fx-spacing: 10px;
+    -fx-alignment: CENTER;
 }
 
-/* Style buttons */
-.button {
-    -fx-background-color: #4CAF50; /* Green */
-    -fx-border-color: #4CAF50; /* Green */
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-}
-
-/* Style register button */
 .register-button {
-    -fx-background-color: #3498db; /* Blue */
-    -fx-border-color: #3498db; /* Blue */
+    -fx-background-color: #3498db;
+    -fx-border-color: #3498db;
     -fx-text-fill: white;
     -fx-font-size: 14px;
 }
 
-/* Style error message */
-.error-message {
-    -fx-text-fill: #FF5733; /* Red */
-    -fx-font-size: 12px;
+
+
+
+.chat-button {
+    -fx-background-radius: 0;
+    -fx-font-weight: bold;
+    -fx-alignment: top-left;
+    -fx-pref-width: 250;
+    -fx-pref-height: 50;
+    -fx-background-color: #f2f2f2;
+    -fx-border-color: #e0dede;
+    -fx-text-fill: black;
+}
+.chat-button:hover{
+    -fx-background-color: #e0dede;
+}
+
+.chat-ta {
+    -fx-pref-width: 500;
+    -fx-background-color: white;
+    -fx-border-color: grey;
+    -fx-border-width: 1px 1px 2px 1px;
+    -fx-border-radius: 2px 2px 0 0;
+    -fx-padding: 4px;
+    -fx-text-fill: black;
+}
+
+
+
+
+.sendChat-button {
+    -fx-pref-width: 27;
+    -fx-pref-height: 27;
+    -fx-background-color: lightgreen;
+    -fx-border-color: green;
+    -fx-border-width: 0 0 2px 0;
+    -fx-background-radius: 0;
+    -fx-padding: 4px;
+    -fx-text-fill: green;
+}
+.sendChat-button:hover{
+    -fx-pref-width: 27;
+    -fx-pref-height: 27;
+    -fx-background-color: lightgreen;
+    -fx-border-color: green;
+    -fx-border-width: 0 0 2px 0;
+    -fx-background-radius: 0;
+    -fx-padding: 4px;
+    -fx-text-fill: green;
+}
+.sendChat-button:pressed{
+    -fx-background-color: green;
+}
+
+.message-tf {
+    -fx-pref-width: 477;
+    -fx-pref-height: 23;
+    -fx-background-color: lightgrey;
+    -fx-border-color: grey;
+    -fx-border-width: 0 0 2px 0;
+    -fx-background-radius: 0;
+    -fx-padding: 4px;
+    -fx-text-fill: black;
+}
+.message-tf:focused{
+    -fx-background-color: grey;
+    -fx-border-color: black;
+    fx-text-fill: white;
+}
+
+.header-part {
+    -fx-spacing: 10px;
+    -fx-padding: 10 0 10 0;
+    -fx-alignment: TOP_LEFT
 }

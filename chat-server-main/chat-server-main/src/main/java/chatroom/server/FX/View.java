@@ -37,6 +37,7 @@ public class View {
 
         //Top Part of the Application
         topHBox = new HBox();
+        topHBox.getStyleClass().add("header-part");
         serverAddressLabel = new Label("Server Address:");
         serverAddressTextField = new TextField(model.getServerAddress() + ":" + model.getServerPort());
         serverAddressSetButton = new Button("Set Server");
@@ -45,12 +46,14 @@ public class View {
         logoutButton.setDisable(true);
         logoutButton.getStyleClass().add("logout-button");
         topHBox.getChildren().addAll(serverAddressLabel, serverAddressTextField, serverAddressSetButton,
-                loginWindowButton, logoutButton);
+                loginWindowButton);
         pane.setTop(topHBox);
 
         //Left part of the application
         allUsersVBox = new VBox();
+        allUsersVBox.getStyleClass().add("allUsers-VBox");
         allUsersTitleLabel = new Label("Online Users");
+        allUsersTitleLabel.getStyleClass().add("allUsers-label");
         allUsersVBox.getChildren().addAll(allUsersTitleLabel);
         pane.setLeft(allUsersVBox);
 
@@ -59,9 +62,11 @@ public class View {
         sendChatVBox = new VBox();
         sendToLabel = new Label("Send To:");
         newChatTextField = new TextField();
+        newChatTextField.getStyleClass().add("newchat-tf");
         newChatButton = new Button("+");
         checknewMessage = new Button("Reload All");
         newChatBox = new HBox();
+        newChatBox.getStyleClass().add("chats-VBox");
         newChatBox.getChildren().addAll(newChatTextField, newChatButton, checknewMessage);
         sendChatVBox.getChildren().addAll(sendToLabel, newChatBox);
 
@@ -70,7 +75,7 @@ public class View {
         centerBox.getChildren().addAll(sendChatVBox, receiveChatVBox);
         pane.setCenter(centerBox);
 
-        Scene scene = new Scene(pane, 800, 600);
+        Scene scene = new Scene(pane, 1200, 800);
         String css = getClass().getResource("/styles.css").toExternalForm();
         scene.getStylesheets().add(css);
         stage.setScene(scene);

@@ -10,17 +10,21 @@ import org.json.JSONException;
 
 public class LoginWindow {
     private final Controller controller;
+    private final View view;
     private String token;
 
     private GridPane grid;
 
-    public LoginWindow( Controller controller) {
+    public LoginWindow( Controller controller, View view) {
         this.controller = controller;
+        this.view = view;
 
         grid = new GridPane();
         grid.setPadding(new Insets(20));
         grid.setVgap(10);
         grid.setHgap(10);
+        grid.getStyleClass().add("grid-pane");
+
 
         Label usernameLabel = new Label("Username:");
         TextField usernameField = new TextField();
@@ -29,6 +33,7 @@ public class LoginWindow {
         PasswordField passwordField = new PasswordField();
 
         Button registerButton = new Button("Register now");
+        registerButton.getStyleClass().add("register-button");
         registerButton.setOnAction(event -> {
             Stage registerStage = new Stage();
             registerStage.setTitle("Register Window");
@@ -57,6 +62,8 @@ public class LoginWindow {
                     setToken(token);
                     onSuccessfulLogin(token);
                     ((Stage) submitButton.getScene().getWindow()).close();
+                    view.topHBox.getChildren().remove(view.loginWindowButton);
+                    view.topHBox.getChildren().add(view.logoutButton);
                 } else {
                     System.out.println("Login failed. Please check your credentials.");
                 }
@@ -66,6 +73,7 @@ public class LoginWindow {
             }
             controller.updateUsersList(controller.fetchUsersFromServer());
             ((Stage) submitButton.getScene().getWindow()).close();
+
         });
 
 
