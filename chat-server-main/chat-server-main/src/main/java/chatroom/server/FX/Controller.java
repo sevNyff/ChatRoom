@@ -30,13 +30,16 @@ public class Controller {
         updateUsersList(fetchUsersFromServer());
 
         view.serverAddressSetButton.setOnAction(event -> onSetServerClicked());
-// Set action for the buttons
+        // Set action for the buttons
         view.loginWindowButton.setOnAction(event -> showLoginWindow());
         view.logoutButton.setOnAction(event -> onLogoutClicked());
+
         view.newChatButton.setOnAction(event -> {
-            setupNewChat();
+            String name = view.newChatTextField.getText();
+            setupNewChat(name);
             view.newChatTextField.clear();
         });
+        view.checknewMessage.setOnAction(event -> createFromMessage());
     }
 
     public void onSetServerClicked() {
@@ -82,9 +85,9 @@ public class Controller {
     }
     public String getServerAddressFromTextField(){return view.serverAddressTextField.getText().split(":")[0];}
 
-    private void setupNewChat() {
+    private void setupNewChat(String name) {
         Button button = new Button();
-        String name = view.newChatTextField.getText();
+        //String name = view.newChatTextField.getText();
         button.setText(name);
         view.chats.put(name, "");
 
@@ -128,6 +131,56 @@ public class Controller {
 
 
     }
+
+    private void createFromMessage() {
+        List<String> receivedMessages = pollMessages();
+        System.out.println(receivedMessages);
+        if (receivedMessages.isEmpty()){
+            showAlertMessage("No new Messages");
+        } else {
+            Platform.runLater(() -> {
+                for (String message : receivedMessages) {
+                    System.out.println("Received Message: " + message);
+                    String[] msg = message.split(":");
+                    String name = msg[0];
+                    Button button = new Button();
+                    //String name = view.newChatTextField.getText();
+                    button.setText(name);
+                    view.chats.put(name, "");
+
+                    view. sendChatVBox.getChildren().add(button);
+
+                    button.setOnAction(e -> {
+                        HBox sendBox = new HBox();
+                        Label receiverName = new Label(name);
+                        Button receiveChatButton = new Button("Reload");
+                        TextField messageTextField = new TextField();
+                        messageTextField.setPromptText("New message");
+                        Button sendChatButton = new Button("Send");
+                        sendBox.getChildren().addAll(messageTextField, sendChatButton);
+                        TextArea chatTextArea = new TextArea(view.chats.get(name));
+                        chatTextArea.setEditable(false);
+                        view.receiveChatVBox.getChildren().clear();
+                        view.receiveChatVBox.getChildren().addAll(receiverName, receiveChatButton, chatTextArea, sendBox);
+
+                        sendChatButton.setOnAction(event -> {
+                            chatTextArea.appendText(onSendButtonClicked(name, messageTextField.getText()+ "\n"));
+                            view.chats.replace(name, chatTextArea.getText());
+                            messageTextField.clear();
+                        });
+                        chatTextArea.appendText("From " + message + "\n");
+                        view.chats.replace(name, chatTextArea.getText());
+
+
+
+                    });
+                    //break;
+                }
+            });
+
+        }
+    }
+
     private String onSendButtonClicked(String name, String inputMessage) {
         String receiver = name;
         String message = inputMessage; //receiver vom model holen
@@ -140,8 +193,6 @@ public class Controller {
 
         if (messageSent) {
             String myMessage = "To " + receiver + ": " + message;
-
-            showAlertMessage("Message sent successfully!");
             return myMessage;
         } else {
             showAlert("Message sending failed.");
@@ -200,11 +251,13 @@ public class Controller {
     }
 
     public boolean isLoggedIn() {
-        // Check if the user is currently logged in
         System.out.println(model.getUserToken());
         return model.getUserToken() != null && !model.getUserToken().isEmpty();
     }
 
+    /* Wir haben bei sämtlichen Server Anfragen den Code und die Dokumentation von Digital Ocean und StackOverflow genommen:
+        https://www.digitalocean.com/community/tutorials/java-httpurlconnection-example-java-http-request-get-post
+     */
     public boolean pingServer(String serverAddress, int port) {
         try {
             URL url = new URL("http://" + serverAddress + ":" + port + "/ping");
@@ -272,7 +325,6 @@ public class Controller {
 
         try {
             URL url = new URL(loginEndpoint);
-
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");

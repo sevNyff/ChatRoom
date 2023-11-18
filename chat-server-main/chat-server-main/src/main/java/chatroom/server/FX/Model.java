@@ -25,7 +25,7 @@ public class Model {
 
     public Model() {
         // Set default server address and port
-        this.serverAddress = "127.0.0.1";
+        this.serverAddress = "javaprojects.ch";
         this.serverPort = 50001;
         this.chats = new HashMap<>();
     }

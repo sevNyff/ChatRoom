@@ -23,7 +23,7 @@ public class View {
     protected VBox allUsersVBox, sendChatVBox, receiveChatVBox;
     protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel;
     protected TextField serverAddressTextField, newChatTextField;
-    protected Button serverAddressSetButton, loginWindowButton, logoutButton, newChatButton;
+    protected Button serverAddressSetButton, loginWindowButton, logoutButton, newChatButton, checknewMessage;
     protected HashMap<String, String> chats;
 
 
@@ -60,9 +60,9 @@ public class View {
         sendToLabel = new Label("Send To:");
         newChatTextField = new TextField();
         newChatButton = new Button("+");
+        checknewMessage = new Button("Reload All");
         newChatBox = new HBox();
-        newChatBox.getChildren().addAll(newChatTextField, newChatButton);
-
+        newChatBox.getChildren().addAll(newChatTextField, newChatButton, checknewMessage);
         sendChatVBox.getChildren().addAll(sendToLabel, newChatBox);
 
         //Right part of the application
