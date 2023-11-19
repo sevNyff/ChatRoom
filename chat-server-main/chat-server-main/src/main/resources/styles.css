@@ -140,18 +140,14 @@
 .message-tf {
     -fx-pref-width: 477;
     -fx-pref-height: 23;
-    -fx-background-color: lightgrey;
+    -fx-background-color: white;
     -fx-border-color: grey;
     -fx-border-width: 0 0 2px 0;
     -fx-background-radius: 0;
     -fx-padding: 4px;
     -fx-text-fill: black;
 }
-.message-tf:focused{
-    -fx-background-color: grey;
-    -fx-border-color: black;
-    fx-text-fill: white;
-}
+
 
 
 /*login/Register page Styles*/

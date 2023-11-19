@@ -20,7 +20,8 @@ public class View {
     BorderPane pane = new BorderPane();
     protected HBox topHBox, centerBox, newChatBox, serverHBox;
     protected VBox onlineUsersVBox, sendChatVBox, receiveChatVBox, navigationVBox, allUsersVBox;
-    protected Label serverAddressLabel, onlineUsersTitleLabel, sendToLabel, titleLabel, allUsersTitleLabel;
+    protected Label serverAddressLabel, onlineUsersTitleLabel, sendToLabel, titleLabel, allUsersTitleLabel,
+    welcomeLabel;
     protected TextField serverAddressTextField, newChatTextField;
     protected Button serverAddressSetButton, loginWindowButton, logoutButton, newChatButton, checknewMessage,
                     pingServerTab, allUserTab, onlineUserTab, chatsTab;
@@ -66,7 +67,7 @@ public class View {
 
         //Server Tab
         serverHBox = new HBox();
-        serverHBox.getStyleClass().add("header-part");
+        serverHBox.getStyleClass().add("chat-boxes");
         serverAddressLabel = new Label("Server Address:");
         serverAddressTextField = new TextField(model.getServerAddress() + ":" + model.getServerPort());
         serverAddressSetButton = new Button("Set Server");
@@ -107,7 +108,9 @@ public class View {
         receiveChatVBox = new VBox(); //Gets Content from setupNewChat Method
         receiveChatVBox.getStyleClass().add("chat-boxes");
         centerBox.getChildren().addAll(sendChatVBox, receiveChatVBox);
-        pane.setCenter(centerBox);
+
+        welcomeLabel = new Label("Welcome");
+        pane.setCenter(welcomeLabel);
 
         //Setup Scene
         Scene scene = new Scene(pane, 1200, 800);
