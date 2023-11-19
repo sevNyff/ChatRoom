@@ -8,58 +8,86 @@
     -fx-background-color: white;
 }
 
+.text-field {
+    -fx-font-size: 14px;
+
+}
+/* Top part styles*/
+.top-hbox {
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-pref-height: 60;
+    -fx-background-color: #afcbd5;
+    -fx-alignment: CENTER;
+}
+
+.title-label {
+    -fx-text-fill: #272838;
+    -fx-font-size: 20;
+    -fx-alignment: TOP_LEFT;
+}
+
+
+.login-button{
+
+    -fx-background-color: #afcbd5;
+    -fx-text-fill: #272838;
+}
+
 .logout-button{
-    -fx-background-color: #fa0202;
-    -fx-text-fill: #801627;
+    -fx-background-color: #afcbd5;
+    -fx-text-fill: #815355;
 }
 
-
-
-.allUsers-VBox {
-    -fx-pref-width: 150;
+/* Left Part Styles*/
+.navigation-vbox {
+    -fx-pref-height: 60;
+    -fx-background-color: #272838;
 }
+
+.tab-buttons {
+    -fx-background-color: #afcbd5;
+    -fx-text-fill: #272838;
+    -fx-pref-width: 100;
+    -fx-pref-height: 40;
+    -fx-background-radius: 0;
+    -fx-border-width: 0 0 2px 0;
+}
+.tab-buttons:focused{
+    -fx-background-color: #272838;
+    -fx-text-fill: #afcbd5;
+}
+
+/* All users and online users Tabs Styles*/
+.users-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 20;
+}
+
+.users-VBox {
+    -fx-spacing: 10;
+    -fx-padding: 10;
+}
+
 .chats-VBox {
     -fx-pref-width: 250;
 }
 
 
 
-
-.allUsers-label {
-    -fx-font-weight: bold;
-    -fx-font-size: 20;
-}
-
-/* Style text fields */
-.text-field {
-    -fx-font-size: 14px;
-
-}
 .newchat-tf {
     -fx-pref-width: 154;
 }
 
-
-/*Style the login page */
-.grid-pane {
-    -fx-background-color: lightgrey; /* Background color for the GridPane */
-    -fx-padding: 20px;
-    -fx-spacing: 10px;
-    -fx-alignment: CENTER;
+/*Chat Tap Styles*/
+.chat-boxes {
+    -fx-spacing: 10;
+    -fx-padding: 10;
 }
-
-.register-button {
-    -fx-background-color: #3498db;
-    -fx-border-color: #3498db;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-}
-
-
-
 
 .chat-button {
-    -fx-background-radius: 0;
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
     -fx-font-weight: bold;
     -fx-alignment: top-left;
     -fx-pref-width: 250;
@@ -124,6 +152,35 @@
     -fx-border-color: black;
     fx-text-fill: white;
 }
+
+
+/*login/Register page Styles*/
+.grid-pane {
+    -fx-background-color: lightgrey;
+    -fx-padding: 20px;
+    -fx-spacing: 10px;
+    -fx-alignment: CENTER;
+}
+
+.register-button {
+    -fx-background-color: #3498db;
+    -fx-border-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+.loginRegister-textfields {
+    -fx-background-color: lightgrey;
+        -fx-border-color: grey;
+        -fx-border-width: 0 0 2px 0;
+        -fx-background-radius: 0;
+        -fx-padding: 4px;
+        -fx-text-fill: black;
+}
+
+
+
+
+
 
 .header-part {
     -fx-spacing: 10px;

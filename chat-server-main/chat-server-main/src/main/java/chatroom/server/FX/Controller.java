@@ -29,7 +29,24 @@ public class Controller {
     public Controller(Model model, View view) {
         this.model = model;
         this.view = view;
-        updateUsersList(fetchUsersFromServer());
+        updateOnlineUsersList(fetchOnlineUsersFromServer());
+
+        view.pingServerTab.setOnAction(event -> {
+            view.pane.setCenter(null);
+            view.pane.setCenter(view.serverHBox);
+        });
+        view.allUserTab.setOnAction(event -> {
+            view.pane.setCenter(null);
+            view.pane.setCenter(view.allUsersVBox);
+        });
+        view.onlineUserTab.setOnAction(event -> {
+            view.pane.setCenter(null);
+            view.pane.setCenter(view.onlineUsersVBox);
+        });
+        view.chatsTab.setOnAction(event -> {
+            view.pane.setCenter(null);
+            view.pane.setCenter(view.centerBox);
+        });
 
         view.serverAddressSetButton.setOnAction(event -> onSetServerClicked());
         // Set action for the buttons
@@ -83,7 +100,7 @@ public class Controller {
         } catch (NumberFormatException e) {
             showAlert("Invalid port number!");
         }
-        updateUsersList(fetchUsersFromServer());
+        updateOnlineUsersList(fetchOnlineUsersFromServer());
 
     }
     public int getPortNumberFromTextField(){
@@ -98,9 +115,14 @@ public class Controller {
         button.getStyleClass().add("chat-button");
         view.chats.put(name, "");
 
-        view. sendChatVBox.getChildren().add(button);
+        view.sendChatVBox.getChildren().add(button);
 
-        button.setOnAction(e -> {
+        button.setOnAction(e -> {setupChatWindow(name);});
+
+
+
+    }
+    private void setupChatWindow(String name){
             HBox sendBox = new HBox();
             Label receiverName = new Label(name);
             Button receiveChatButton = new Button("Reload");
@@ -139,14 +161,8 @@ public class Controller {
                 });
                 System.out.println("Received Messages: " + receivedMessages);
             });
-            //receiver im model setzen mit namen vom button
-
-
-
-        });
-
-
     }
+
 
     private void createFromMessage() {
         List<String> receivedMessages = pollMessages();
@@ -160,35 +176,13 @@ public class Controller {
                     String[] msg = message.split(":");
                     String name = msg[0];
                     Button button = new Button();
-                    //String name = view.newChatTextField.getText();
+                    button.getStyleClass().add("chat-button");
                     button.setText(name);
                     view.chats.put(name, "");
 
-                    view. sendChatVBox.getChildren().add(button);
+                    view.sendChatVBox.getChildren().add(button);
 
-                    button.setOnAction(e -> {
-                        HBox sendBox = new HBox();
-                        Label receiverName = new Label(name);
-                        Button receiveChatButton = new Button("Reload");
-                        TextField messageTextField = new TextField();
-                        messageTextField.setPromptText("New message");
-                        Button sendChatButton = new Button("Send");
-                        sendBox.getChildren().addAll(messageTextField, sendChatButton);
-                        TextArea chatTextArea = new TextArea(view.chats.get(name));
-                        chatTextArea.setEditable(false);
-                        view.receiveChatVBox.getChildren().clear();
-                        view.receiveChatVBox.getChildren().addAll(receiverName, receiveChatButton, chatTextArea, sendBox);
-
-                        sendChatButton.setOnAction(event -> {
-                            chatTextArea.appendText(onSendButtonClicked(name, messageTextField.getText()+ "\n"));
-                            view.chats.replace(name, chatTextArea.getText());
-                            messageTextField.clear();
-                        });
-                        chatTextArea.appendText("From " + message + "\n");
-                        view.chats.replace(name, chatTextArea.getText());
-
-
-
+                    button.setOnAction(e -> {setupChatWindow(name);
                     });
                     //break;
                 }
@@ -218,13 +212,13 @@ public class Controller {
 
     }
 
-    public void updateUsersList(List<String> userList) {
+    public void updateOnlineUsersList(List<String> userList) {
         Platform.runLater(() -> {
-            view.allUsersVBox.getChildren().clear();
-            view.allUsersVBox.getChildren().addAll(view.allUsersTitleLabel);
+            view.onlineUsersVBox.getChildren().clear();
+            view.onlineUsersVBox.getChildren().addAll(view.onlineUsersTitleLabel);
             for (String user : userList) {
                 Label userLabel = new Label(user);
-                view.allUsersVBox.getChildren().add(userLabel);
+                view.onlineUsersVBox.getChildren().add(userLabel);
             }
         });
     }
@@ -238,7 +232,7 @@ public class Controller {
         logout();
         updateLogoutButton(false);
         showAlertMessage("You are logged out!");
-        updateUsersList(fetchUsersFromServer());
+        updateOnlineUsersList(fetchOnlineUsersFromServer());
     }
 
     private void showAlertMessage(String message) {
@@ -290,7 +284,7 @@ public class Controller {
         }
     }
 
-    public List<String> fetchUsersFromServer() {
+    public List<String> fetchOnlineUsersFromServer() {
         String serverEndpoint = "http://" + model.getServerAddress() + ":" + model.getServerPort() + "/users/online";
 
         try {
@@ -309,7 +303,7 @@ public class Controller {
                 }
                 reader.close();
 
-                return parseUserList(response.toString());
+                return parseOnlineUserList(response.toString());
             } else {
                 System.out.println("Error: " + responseCode);
                 return new ArrayList<>();
@@ -320,7 +314,7 @@ public class Controller {
         }
     }
 
-    private List<String> parseUserList(String response) {
+    private List<String> parseOnlineUserList(String response) {
         try {
             JSONObject json = new JSONObject(response);
             JSONArray onlineUsers = json.getJSONArray("online");

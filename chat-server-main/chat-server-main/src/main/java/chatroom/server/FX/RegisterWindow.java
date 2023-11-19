@@ -21,12 +21,15 @@ public class RegisterWindow {
         grid.setPadding(new Insets(20));
         grid.setVgap(10);
         grid.setHgap(10);
+        grid.getStyleClass().add("grid-pane");
 
         Label usernameLabel = new Label("Username:");
         TextField usernameField = new TextField();
+        usernameField.getStyleClass().add("loginRegister-textfields");
 
         Label passwordLabel = new Label("Password:");
         PasswordField passwordField = new PasswordField();
+        passwordField.getStyleClass().add("loginRegister-textfields");
 
         Button submitButton = new Button("Submit");
 

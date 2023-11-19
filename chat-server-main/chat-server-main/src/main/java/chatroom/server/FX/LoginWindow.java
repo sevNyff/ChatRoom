@@ -28,9 +28,11 @@ public class LoginWindow {
 
         Label usernameLabel = new Label("Username:");
         TextField usernameField = new TextField();
+        usernameField.getStyleClass().add("loginRegister-textfields");
 
         Label passwordLabel = new Label("Password:");
         PasswordField passwordField = new PasswordField();
+        passwordField.getStyleClass().add("loginRegister-textfields");
 
         Button registerButton = new Button("Register now");
         registerButton.getStyleClass().add("register-button");
@@ -71,7 +73,7 @@ public class LoginWindow {
                 System.out.println("Login failed. Please check your credentials.");
                 showAlert("Login failed. Please check your credentials.");
             }
-            controller.updateUsersList(controller.fetchUsersFromServer());
+            controller.updateOnlineUsersList(controller.fetchOnlineUsersFromServer());
             ((Stage) submitButton.getScene().getWindow()).close();
 
         });

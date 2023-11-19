@@ -3,9 +3,7 @@ package chatroom.server.FX;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.json.JSONObject;
@@ -19,11 +17,13 @@ import java.util.logging.Logger;
 public class View {
     private final Model model;
     private Stage stage;
-    protected HBox topHBox, centerBox, newChatBox;
-    protected VBox allUsersVBox, sendChatVBox, receiveChatVBox;
-    protected Label serverAddressLabel, allUsersTitleLabel, sendToLabel;
+    BorderPane pane = new BorderPane();
+    protected HBox topHBox, centerBox, newChatBox, serverHBox;
+    protected VBox onlineUsersVBox, sendChatVBox, receiveChatVBox, navigationVBox, allUsersVBox;
+    protected Label serverAddressLabel, onlineUsersTitleLabel, sendToLabel, titleLabel, allUsersTitleLabel;
     protected TextField serverAddressTextField, newChatTextField;
-    protected Button serverAddressSetButton, loginWindowButton, logoutButton, newChatButton, checknewMessage;
+    protected Button serverAddressSetButton, loginWindowButton, logoutButton, newChatButton, checknewMessage,
+                    pingServerTab, allUserTab, onlineUserTab, chatsTab;
     protected HashMap<String, String> chats;
 
 
@@ -33,33 +33,68 @@ public class View {
         stage.setTitle("Chat Room");
         chats = new HashMap<>();
 
-        BorderPane pane = new BorderPane();
+        pane = new BorderPane();
 
         //Top Part of the Application
         topHBox = new HBox();
-        topHBox.getStyleClass().add("header-part");
-        serverAddressLabel = new Label("Server Address:");
-        serverAddressTextField = new TextField(model.getServerAddress() + ":" + model.getServerPort());
-        serverAddressSetButton = new Button("Set Server");
+        topHBox.getStyleClass().add("top-hbox");
+        titleLabel = new Label("Chat App");
+        titleLabel.getStyleClass().add("title-label");
         loginWindowButton = new Button(("Login"));
+        loginWindowButton.getStyleClass().add("login-button");
         logoutButton = new Button("Logout");
         logoutButton.setDisable(true);
         logoutButton.getStyleClass().add("logout-button");
-        topHBox.getChildren().addAll(serverAddressLabel, serverAddressTextField, serverAddressSetButton,
-                loginWindowButton);
+        Region space = new Region();
+        HBox.setHgrow(space, Priority.ALWAYS);
+        topHBox.getChildren().addAll(titleLabel, space, loginWindowButton);
         pane.setTop(topHBox);
 
         //Left part of the application
-        allUsersVBox = new VBox();
-        allUsersVBox.getStyleClass().add("allUsers-VBox");
-        allUsersTitleLabel = new Label("Online Users");
-        allUsersTitleLabel.getStyleClass().add("allUsers-label");
-        allUsersVBox.getChildren().addAll(allUsersTitleLabel);
-        pane.setLeft(allUsersVBox);
+        navigationVBox = new VBox();
+        navigationVBox.getStyleClass().add("navigation-vbox");
+        pingServerTab = new Button("Server");
+        pingServerTab.getStyleClass().add("tab-buttons");
+        allUserTab = new Button("All Users");
+        allUserTab.getStyleClass().add("tab-buttons");
+        onlineUserTab = new Button("Online Users");
+        onlineUserTab.getStyleClass().add("tab-buttons");
+        chatsTab = new Button("Chats");
+        chatsTab.getStyleClass().add("tab-buttons");
+        navigationVBox.getChildren().addAll(pingServerTab, allUserTab, onlineUserTab, chatsTab);
+        pane.setLeft(navigationVBox);
 
-        //Center part of the application
+        //Server Tab
+        serverHBox = new HBox();
+        serverHBox.getStyleClass().add("header-part");
+        serverAddressLabel = new Label("Server Address:");
+        serverAddressTextField = new TextField(model.getServerAddress() + ":" + model.getServerPort());
+        serverAddressSetButton = new Button("Set Server");
+        serverHBox.getChildren().addAll(serverAddressLabel, serverAddressTextField, serverAddressSetButton);
+
+
+
+
+        //Online Users Tab
+        onlineUsersVBox = new VBox();
+        onlineUsersVBox.getStyleClass().add("users-VBox");
+        onlineUsersTitleLabel = new Label("Online Users");
+        onlineUsersTitleLabel.getStyleClass().add("users-label");
+        onlineUsersVBox.getChildren().addAll(onlineUsersTitleLabel);
+
+        //Online Users Tab
+        allUsersVBox = new VBox();
+        allUsersVBox.getStyleClass().add("users-VBox");
+        allUsersTitleLabel = new Label("All Users");
+        allUsersTitleLabel.getStyleClass().add("users-label");
+        allUsersVBox.getChildren().addAll(allUsersTitleLabel);
+
+
+        //Chats Tab
         centerBox = new HBox();
+        centerBox.getStyleClass().add("chat-boxes");
         sendChatVBox = new VBox();
+        sendChatVBox.getStyleClass().add("chat-boxes");
         sendToLabel = new Label("Send To:");
         newChatTextField = new TextField();
         newChatTextField.getStyleClass().add("newchat-tf");
@@ -69,12 +104,12 @@ public class View {
         newChatBox.getStyleClass().add("chats-VBox");
         newChatBox.getChildren().addAll(newChatTextField, newChatButton, checknewMessage);
         sendChatVBox.getChildren().addAll(sendToLabel, newChatBox);
-
-        //Right part of the application
-        receiveChatVBox = new VBox();
+        receiveChatVBox = new VBox(); //Gets Content from setupNewChat Method
+        receiveChatVBox.getStyleClass().add("chat-boxes");
         centerBox.getChildren().addAll(sendChatVBox, receiveChatVBox);
         pane.setCenter(centerBox);
 
+        //Setup Scene
         Scene scene = new Scene(pane, 1200, 800);
         String css = getClass().getResource("/styles.css").toExternalForm();
         scene.getStylesheets().add(css);
