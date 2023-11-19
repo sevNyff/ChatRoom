@@ -63,6 +63,10 @@ public class Controller {
             view.newChatTextField.clear();
         });
         view.checknewMessage.setOnAction(event -> createFromMessage());
+
+        view.getStage().setOnCloseRequest(event -> {
+            logout();
+        });
     }
 
     public void onSetServerClicked() {

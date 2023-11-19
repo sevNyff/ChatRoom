@@ -19,6 +19,8 @@
     -fx-pref-height: 60;
     -fx-background-color: #afcbd5;
     -fx-alignment: CENTER;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #272838;
 }
 
 .title-label {
@@ -42,7 +44,9 @@
 /* Left Part Styles*/
 .navigation-vbox {
     -fx-pref-height: 60;
-    -fx-background-color: #272838;
+    -fx-background-color: #afcbd5;
+    -fx-border-width: 0 1px 0 0;
+    -fx-border-color: #272838;
 }
 
 .tab-buttons {
