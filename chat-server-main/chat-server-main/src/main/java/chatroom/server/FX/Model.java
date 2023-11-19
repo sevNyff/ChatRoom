@@ -50,4 +50,5 @@ public class Model {
         this.serverPort = serverPort;
     }
     public int getServerPort(){return this.serverPort;}
+
 }

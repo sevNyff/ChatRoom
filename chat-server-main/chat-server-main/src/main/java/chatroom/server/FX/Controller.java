@@ -1,7 +1,5 @@
 package chatroom.server.FX;
 
-
-import chatroom.server.Server;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -30,6 +28,7 @@ public class Controller {
         this.model = model;
         this.view = view;
         updateOnlineUsersList(fetchOnlineUsersFromServer());
+        updateAllUserList(fetchAllUsersFromServer());
 
         view.pingServerTab.setOnAction(event -> {
             view.pane.setCenter(null);
@@ -62,59 +61,15 @@ public class Controller {
             setupNewChat(name);
             view.newChatTextField.clear();
         });
-        view.checknewMessage.setOnAction(event -> createFromMessage());
+        view.checknewMessage.setOnAction(event -> createWindowFromMessage());
 
         view.getStage().setOnCloseRequest(event -> {
-            logout();
+            logoutUser();
         });
     }
 
-    public void onSetServerClicked() {
-        try {
-            if (getPortNumberFromTextField() > 0 && getPortNumberFromTextField() < 65536) {
-                model.setServerPort(getPortNumberFromTextField());
-                model.setServerAddress(getServerAddressFromTextField());
-                pingServer(model.getServerAddress(), model.getServerPort());
-                try {
-                    int port = model.getServerPort();
-                    String serverAddress = model.getServerAddress();
-                    System.out.println("Server Address: " + serverAddress);
-                    System.out.println("Port: " + port);
-
-                    if (pingServer(serverAddress, port)) {
-                        Platform.runLater(() -> {
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Ping successful!", ButtonType.OK);
-                            alert.showAndWait();
-                        });
-                    } else {
-                        Platform.runLater(() -> {
-                            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to ping the server!", ButtonType.OK);
-                            alert.showAndWait();
-                        });
-                    }
-                } catch (NumberFormatException e) {
-                    Platform.runLater(() -> {
-                        Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid port number!", ButtonType.OK);
-                        alert.showAndWait();
-                    });
-                }
-            } else {
-                showAlert("Invalid port number!");
-            }
-        } catch (NumberFormatException e) {
-            showAlert("Invalid port number!");
-        }
-        updateOnlineUsersList(fetchOnlineUsersFromServer());
-
-    }
-    public int getPortNumberFromTextField(){
-        return Integer.parseInt(view.serverAddressTextField.getText().split(":")[1]);
-    }
-    public String getServerAddressFromTextField(){return view.serverAddressTextField.getText().split(":")[0];}
-
     private void setupNewChat(String name) {
         Button button = new Button();
-        //String name = view.newChatTextField.getText();
         button.setText(name);
         button.getStyleClass().add("chat-button");
         view.chats.put(name, "");
@@ -122,9 +77,6 @@ public class Controller {
         view.sendChatVBox.getChildren().add(button);
 
         button.setOnAction(e -> {setupChatWindow(name);});
-
-
-
     }
     private void setupChatWindow(String name){
             HBox sendBox = new HBox();
@@ -168,7 +120,7 @@ public class Controller {
     }
 
 
-    private void createFromMessage() {
+    private void createWindowFromMessage() {
         List<String> receivedMessages = pollMessages();
         System.out.println(receivedMessages);
         if (receivedMessages.isEmpty()){
@@ -188,7 +140,6 @@ public class Controller {
 
                     button.setOnAction(e -> {setupChatWindow(name);
                     });
-                    //break;
                 }
             });
 
@@ -227,21 +178,32 @@ public class Controller {
         });
     }
 
+    public void updateAllUserList(List<String> userList){
+        Platform.runLater(() -> {
+            view.allUsersVBox.getChildren().clear();
+            view.allUsersVBox.getChildren().addAll(view.allUsersTitleLabel);
+            for(String user : userList){
+                Label userLabel = new Label(user);
+                view.allUsersVBox.getChildren().add(userLabel);
+            }
+        });
+    }
+
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message);
         alert.showAndWait();
     }
-
-    private void onLogoutClicked() {
-        logout();
-        updateLogoutButton(false);
-        showAlertMessage("You are logged out!");
-        updateOnlineUsersList(fetchOnlineUsersFromServer());
-    }
-
     private void showAlertMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
         alert.showAndWait();
+    }
+
+
+    private void onLogoutClicked() {
+        logoutUser();
+        updateLogoutButton(false);
+        showAlertMessage("You are logged out!");
+        updateOnlineUsersList(fetchOnlineUsersFromServer());
     }
 
     public void updateLogoutButton(boolean loggedIn) {
@@ -261,8 +223,7 @@ public class Controller {
 
         loginStage.show();
     }
-    public void onSuccessfulLogin(String token) {updateLogoutButton(true);
-    }
+    public void onSuccessfulLogin(String token) {updateLogoutButton(true);}
 
     public boolean isLoggedIn() {
         System.out.println(model.getUserToken());
@@ -272,6 +233,50 @@ public class Controller {
     /* Wir haben bei sämtlichen Server Anfragen den Code und die Dokumentation von Digital Ocean und StackOverflow genommen:
         https://www.digitalocean.com/community/tutorials/java-httpurlconnection-example-java-http-request-get-post
      */
+
+    public void onSetServerClicked() {
+        try {
+            if (getPortNumberFromTextField() > 0 && getPortNumberFromTextField() < 65536) {
+                model.setServerPort(getPortNumberFromTextField());
+                model.setServerAddress(getServerAddressFromTextField());
+                pingServer(model.getServerAddress(), model.getServerPort());
+                try {
+                    int port = model.getServerPort();
+                    String serverAddress = model.getServerAddress();
+                    System.out.println("Server Address: " + serverAddress);
+                    System.out.println("Port: " + port);
+
+                    if (pingServer(serverAddress, port)) {
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Ping successful!", ButtonType.OK);
+                            alert.showAndWait();
+                        });
+                    } else {
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to ping the server!", ButtonType.OK);
+                            alert.showAndWait();
+                        });
+                    }
+                } catch (NumberFormatException e) {
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid port number!", ButtonType.OK);
+                        alert.showAndWait();
+                    });
+                }
+            } else {
+                showAlert("Invalid port number!");
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Invalid port number!");
+        }
+        updateOnlineUsersList(fetchOnlineUsersFromServer());
+        updateAllUserList(fetchAllUsersFromServer());
+
+    }
+    public int getPortNumberFromTextField(){
+        return Integer.parseInt(view.serverAddressTextField.getText().split(":")[1]);}
+    public String getServerAddressFromTextField(){return view.serverAddressTextField.getText().split(":")[0];}
+
     public boolean pingServer(String serverAddress, int port) {
         try {
             URL url = new URL("http://" + serverAddress + ":" + port + "/ping");
@@ -307,6 +312,8 @@ public class Controller {
                 }
                 reader.close();
 
+                System.out.println(response);
+
                 return parseOnlineUserList(response.toString());
             } else {
                 System.out.println("Error: " + responseCode);
@@ -317,11 +324,55 @@ public class Controller {
             return new ArrayList<>();
         }
     }
-
     private List<String> parseOnlineUserList(String response) {
         try {
             JSONObject json = new JSONObject(response);
             JSONArray onlineUsers = json.getJSONArray("online");
+
+            List<String> userList = new ArrayList<>();
+            for (int i = 0; i < onlineUsers.length(); i++) {
+                userList.add(onlineUsers.getString(i));
+            }
+            return userList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public List<String> fetchAllUsersFromServer() {
+        String serverEndpoint = "http://" + model.getServerAddress() + ":" + model.getServerPort() + "/users";
+        try {
+            URL url = new URL(serverEndpoint);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                System.out.println("all: " + response);
+
+                return parseAllUserList(response.toString());
+            } else {
+                System.out.println("Error: " + responseCode);
+                return new ArrayList<>();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+    private List<String> parseAllUserList(String response) {
+        try {
+            JSONObject json = new JSONObject(response);
+            JSONArray onlineUsers = json.getJSONArray("users");
 
             List<String> userList = new ArrayList<>();
             for (int i = 0; i < onlineUsers.length(); i++) {
@@ -409,7 +460,7 @@ public class Controller {
             return false;
         }
     }
-    public void logout() {
+    public void logoutUser() {
         String serverLogoutEndpoint = "http://" + model.getServerAddress() + ":" + model.getServerPort() + "/user/logout";
         if (isLoggedIn()) {
             try {
@@ -449,6 +500,7 @@ public class Controller {
                 System.out.println("You need to log in first.");
                 return false;
             }
+
             String sendMessageEndpoint = "http://" + model.getServerAddress() + ":" + model.getServerPort() + "/chat/send";
             String jsonInputString = String.format("{\"token\": \"%s\", \"username\": \"%s\", \"message\": \"%s\"}",
                     token, receiver, message);
@@ -485,8 +537,9 @@ public class Controller {
             return new ArrayList<>();
         }
 
+        String pollEndpoint = "http://" + model.getServerAddress() + ":" + model.getServerPort() + "/chat/poll";
         try {
-            String pollEndpoint = "http://" + model.getServerAddress() + ":" + model.getServerPort() + "/chat/poll";
+
             URL url = new URL(pollEndpoint);
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

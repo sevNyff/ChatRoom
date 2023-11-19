@@ -46,6 +46,7 @@ public class RegisterWindow {
             } else {
                 System.out.println("User registration failed.");
             }
+            controller.updateAllUserList(controller.fetchAllUsersFromServer());
         });
         grid.add(usernameLabel, 0, 0);
         grid.add(usernameField, 1, 0);
