@@ -17,14 +17,15 @@ import java.util.logging.Logger;
 public class View {
     private final Model model;
     private Stage stage;
-    BorderPane pane = new BorderPane();
+    protected BorderPane pane;
     protected HBox topHBox, centerBox, newChatBox, serverHBox;
     protected VBox onlineUsersVBox, sendChatVBox, receiveChatVBox, navigationVBox, allUsersVBox;
     protected Label serverAddressLabel, onlineUsersTitleLabel, sendToLabel, titleLabel, allUsersTitleLabel,
     welcomeLabel;
-    protected TextField serverAddressTextField, newChatTextField;
+    protected TextField serverAddressTextField;
     protected Button serverAddressSetButton, loginWindowButton, logoutButton, newChatButton, checknewMessage,
                     pingServerTab, allUserTab, onlineUserTab, chatsTab;
+    protected  ComboBox comboBox;
     protected HashMap<String, String> chats;
 
 
@@ -97,13 +98,13 @@ public class View {
         sendChatVBox = new VBox();
         sendChatVBox.getStyleClass().add("chat-boxes");
         sendToLabel = new Label("Send To:");
-        newChatTextField = new TextField();
-        newChatTextField.getStyleClass().add("newchat-tf");
+        comboBox = new ComboBox<>();
+        comboBox.getStyleClass().add("combo-box");
         newChatButton = new Button("+");
         checknewMessage = new Button("Reload All");
         newChatBox = new HBox();
         newChatBox.getStyleClass().add("chats-VBox");
-        newChatBox.getChildren().addAll(newChatTextField, newChatButton, checknewMessage);
+        newChatBox.getChildren().addAll(comboBox, newChatButton, checknewMessage);
         sendChatVBox.getChildren().addAll(sendToLabel, newChatBox);
         receiveChatVBox = new VBox(); //Gets Content from setupNewChat Method
         receiveChatVBox.getStyleClass().add("chat-boxes");

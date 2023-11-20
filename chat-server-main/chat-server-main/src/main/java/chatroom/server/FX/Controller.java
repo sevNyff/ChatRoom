@@ -48,7 +48,6 @@ public class Controller {
         });
 
         view.serverAddressSetButton.setOnAction(event -> onSetServerClicked());
-        // Set action for the buttons
         view.loginWindowButton.setOnAction(event -> showLoginWindow());
         view.logoutButton.setOnAction(event -> {
             onLogoutClicked();
@@ -57,9 +56,13 @@ public class Controller {
         });
 
         view.newChatButton.setOnAction(event -> {
-            String name = view.newChatTextField.getText();
-            setupNewChat(name);
-            view.newChatTextField.clear();
+            if (view.comboBox.getValue() == null){
+                System.out.println("No user selected"); //@TO-DO alert
+            }else {
+                String name = view.comboBox.getValue().toString();
+                setupNewChat(name);
+                view.comboBox.setValue(null);
+            }
         });
         view.checknewMessage.setOnAction(event -> createWindowFromMessage());
 
@@ -334,6 +337,7 @@ public class Controller {
             for (int i = 0; i < onlineUsers.length(); i++) {
                 userList.add(onlineUsers.getString(i));
             }
+            view.comboBox.getItems().addAll(userList);
             return userList;
         } catch (JSONException e) {
             e.printStackTrace();
