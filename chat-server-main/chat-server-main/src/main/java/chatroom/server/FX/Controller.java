@@ -317,8 +317,6 @@ public class Controller {
                 }
                 reader.close();
 
-                System.out.println(response);
-
                 return parseOnlineUserList(response.toString());
             } else {
                 System.out.println("Error: " + responseCode);
@@ -363,7 +361,6 @@ public class Controller {
                     response.append(line);
                 }
                 reader.close();
-                System.out.println("all: " + response);
 
                 return parseAllUserList(response.toString());
             } else {
@@ -447,10 +444,8 @@ public class Controller {
             String jsonInputString = "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
             connection.setDoOutput(true);
 
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("UTF-8");
-                os.write(input, 0, input.length);
-            }
+            connection.getOutputStream().write(jsonInputString.getBytes("UTF-8"));
+
             int responseCode = connection.getResponseCode();
             System.out.println("Response code Register: " + responseCode);
 
@@ -479,10 +474,8 @@ public class Controller {
                 String jsonInputString = "{\"token\": \"" + model.getUserToken() + "\"}";
                 connection.setDoOutput(true);
 
-                try (OutputStream os = connection.getOutputStream()) {
-                    byte[] input = jsonInputString.getBytes("UTF-8");
-                    os.write(input, 0, input.length);
-                }
+                connection.getOutputStream().write(jsonInputString.getBytes("UTF-8"));
+
                 int responseCode = connection.getResponseCode();
                 System.out.println("Response code: " + responseCode);
 
@@ -517,10 +510,7 @@ public class Controller {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("UTF-8");
-                os.write(input, 0, input.length);
-            }
+            connection.getOutputStream().write(jsonInputString.getBytes("UTF-8"));
 
             int responseCode = connection.getResponseCode();
             System.out.println("Response code: " + responseCode); //For debugging
