@@ -405,10 +405,15 @@ public class Controller {
             int responseCode = connection.getResponseCode();
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                String token = extractTokenFromResponse(connection);
-                connection.disconnect();
-                model.setUserToken(token);
-                return token;
+                StringBuilder response = new StringBuilder();
+                try (var reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                }
+                JSONObject json = new JSONObject(response.toString());
+                return json.getString("token");
             } else {
                 System.out.println("Login failed. HTTP Response Code: " + responseCode);
                 return null;
@@ -417,18 +422,6 @@ public class Controller {
             e.printStackTrace();
             return null;
         }
-    }
-
-    private String extractTokenFromResponse(HttpURLConnection connection) throws IOException {
-        StringBuilder response = new StringBuilder();
-        try (var reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-        }
-        JSONObject json = new JSONObject(response.toString());
-        return json.getString("token");
     }
 
     public boolean registerUser(String username, String password) {
