@@ -119,7 +119,6 @@ public class Controller {
             });
     }
 
-
     private void createWindowFromMessage() {
         List<String> receivedMessages = pollMessages();
         System.out.println(receivedMessages);
@@ -230,9 +229,11 @@ public class Controller {
         return model.getUserToken() != null && !model.getUserToken().isEmpty();
     }
 
-    /* Wir haben bei sämtlichen Server Anfragen den Code und die Dokumentation von Digital Ocean und StackOverflow genommen:
+
+    /* Wir haben bei sämtlichen Server Anfragen den Code und die Dokumentation von Digital Ocean genommen und mit ChatGPT/Stackoverflow ergänzt:
         https://www.digitalocean.com/community/tutorials/java-httpurlconnection-example-java-http-request-get-post
      */
+
 
     public void onSetServerClicked() {
         try {
@@ -601,8 +602,4 @@ public class Controller {
             return new ArrayList<>();
         }
     }
-
-
-
-
 }
