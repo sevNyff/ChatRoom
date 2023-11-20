@@ -57,7 +57,8 @@ public class Controller {
 
         view.newChatButton.setOnAction(event -> {
             if (view.comboBox.getValue() == null){
-                System.out.println("No user selected"); //@TO-DO alert
+                showAlert("No user Selected");
+
             }else {
                 String name = view.comboBox.getValue().toString();
                 setupNewChat(name);
