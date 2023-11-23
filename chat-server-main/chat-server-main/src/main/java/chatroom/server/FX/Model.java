@@ -10,13 +10,15 @@ public class Model {
     private String serverAddress;
     private int serverPort;
     private String userToken;
-    private HashMap<String, String> chats;
+    protected HashMap<String, String> chats;
+    private ArrayList<String> userChats;
 
     public Model() {
         // Set default server address and port
         this.serverAddress = "javaprojects.ch";
         this.serverPort = 50001;
         this.chats = new HashMap<>();
+        this.userChats = new ArrayList<>();
     }
 
     public void setChats(HashMap<String, String> chats) {
@@ -39,4 +41,6 @@ public class Model {
         this.serverPort = serverPort;
     }
     public int getServerPort(){return this.serverPort;}
+    public ArrayList<String> getUserChats() {return userChats;}
+    public void setUserChats(ArrayList<String> userChats) {this.userChats = userChats;}
 }

@@ -53,6 +53,14 @@ public class Controller {
             onLogoutClicked();
             view.topHBox.getChildren().remove(view.logoutButton);
             view.topHBox.getChildren().add(view.loginWindowButton);
+            //Remove open Chats from chats tab and add online users back to the combobox
+            view.sendChatVBox.getChildren().clear();
+            view.receiveChatVBox.getChildren().clear();
+            view.sendChatVBox.getChildren().addAll(view.sendToLabel, view.newChatBox);
+            model.chats.clear();
+            //TODO testen ob wirklich liste neu lädt
+            fetchOnlineUsersFromServer();
+
         });
 
         view.newChatButton.setOnAction(event -> {
@@ -63,6 +71,7 @@ public class Controller {
                 setupNewChat(name);
                 view.comboBox.getItems().remove(name);
                 view.comboBox.setValue(null);
+                model.getUserChats().add(name);
             }
         });
         view.checknewMessage.setOnAction(event -> createWindowFromMessage());
@@ -76,7 +85,7 @@ public class Controller {
         Button button = new Button();
         button.setText(name);
         button.getStyleClass().add("chat-button");
-        view.chats.put(name, "");
+        model.chats.put(name, "");
 
         view.sendChatVBox.getChildren().add(button);
 
@@ -98,7 +107,7 @@ public class Controller {
             sendChatButton.setGraphic(imageView);
             sendChatButton.getStyleClass().add("sendChat-button");
             sendBox.getChildren().addAll(messageTextField, sendChatButton);
-            TextArea chatTextArea = new TextArea(view.chats.get(name));
+            TextArea chatTextArea = new TextArea(model.chats.get(name));
             chatTextArea.getStyleClass().add("chat-ta");
             chatTextArea.setEditable(false);
             view.receiveChatVBox.getChildren().clear();
@@ -106,7 +115,7 @@ public class Controller {
 
             sendChatButton.setOnAction(event -> {
                 chatTextArea.appendText(onSendButtonClicked(name, messageTextField.getText()+ "\n"));
-                view.chats.replace(name, chatTextArea.getText());
+                model.chats.replace(name, chatTextArea.getText());
                 messageTextField.clear();
             });
             receiveChatButton.setOnAction(event -> {
@@ -116,7 +125,7 @@ public class Controller {
                     for (String message : receivedMessages) {
                         System.out.println("Received Message: " + message);
                         chatTextArea.appendText("From " + message + "\n");
-                        view.chats.replace(name, chatTextArea.getText());
+                        model.chats.replace(name, chatTextArea.getText());
                     }
                 });
                 System.out.println("Received Messages: " + receivedMessages);
@@ -134,15 +143,24 @@ public class Controller {
                     System.out.println("Received Message: " + message);
                     String[] msg = message.split(":");
                     String name = msg[0];
-                    Button button = new Button();
-                    button.getStyleClass().add("chat-button");
-                    button.setText(name);
-                    view.chats.put(name, "");
+                    //Prüfen ob ein chat mit der person besteht, wenn ja nur nachricht dem chat hinzufügen
+                    if (model.getUserChats().contains(name)){
+                        String updatedValue = model.chats.get(name) + "From: " + msg[1] + "\n";
+                        //TODO textarea aktuallisieren, wenn geht. Brad fragen
+                        model.chats.put(name, updatedValue);
 
-                    view.sendChatVBox.getChildren().add(button);
+                    }else {
+                        Button button = new Button();
+                        button.getStyleClass().add("chat-button");
+                        button.setText(name);
+                        model.chats.put(name, "");
 
-                    button.setOnAction(e -> {setupChatWindow(name);
-                    });
+                        view.sendChatVBox.getChildren().add(button);
+
+                        button.setOnAction(e -> {
+                            setupChatWindow(name);
+                        });
+                    }
                 }
             });
 

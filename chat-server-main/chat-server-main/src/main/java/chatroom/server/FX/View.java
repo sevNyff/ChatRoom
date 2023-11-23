@@ -26,14 +26,12 @@ public class View {
     protected Button serverAddressSetButton, loginWindowButton, logoutButton, newChatButton, checknewMessage,
                     pingServerTab, allUserTab, onlineUserTab, chatsTab;
     protected  ComboBox comboBox;
-    protected HashMap<String, String> chats;
 
 
     public View(Stage stage, Model model) {
         this.model = model;
         this.stage = stage;
         stage.setTitle("Chat Room");
-        chats = new HashMap<>();
 
         pane = new BorderPane();
 
