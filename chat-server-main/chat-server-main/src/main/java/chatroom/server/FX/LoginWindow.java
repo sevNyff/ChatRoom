@@ -11,13 +11,14 @@ import org.json.JSONException;
 public class LoginWindow {
     private final Controller controller;
     private final View view;
-    private String token;
+    private Model model;
 
     private GridPane grid;
 
-    public LoginWindow( Controller controller, View view) {
+    public LoginWindow(Controller controller, View view, Model model) {
         this.controller = controller;
         this.view = view;
+        this.model = model;
 
         grid = new GridPane();
         grid.setPadding(new Insets(20));
@@ -61,7 +62,7 @@ public class LoginWindow {
                 String token = controller.loginAndGetToken(username, password);
                 if (token != null && !token.isEmpty()) {
                     System.out.println("Login successful. Token: " + token);
-                    setToken(token);
+                    model.setUserToken(token);
                     onSuccessfulLogin(token);
                     ((Stage) submitButton.getScene().getWindow()).close();
                     view.topHBox.getChildren().remove(view.loginWindowButton);
@@ -94,14 +95,6 @@ public class LoginWindow {
     }
     public GridPane getGrid() {
         return grid;
-    }
-
-    private void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getToken() {
-        return token;
     }
 
     private void showAlert(String message) {

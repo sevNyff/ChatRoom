@@ -58,7 +58,6 @@ public class Controller {
         view.newChatButton.setOnAction(event -> {
             if (view.comboBox.getValue() == null){
                 showAlert("No user Selected");
-
             }else {
                 String name = view.comboBox.getValue().toString();
                 setupNewChat(name);
@@ -218,7 +217,7 @@ public class Controller {
         Stage loginStage = new Stage();
         loginStage.setTitle("Login Window");
 
-        LoginWindow loginWindow = new LoginWindow(this, this.view);
+        LoginWindow loginWindow = new LoginWindow(this, this.view, this.model);
 
         Scene scene = new Scene(loginWindow.getGrid(), 300, 200);
         String css = getClass().getResource("/styles.css").toExternalForm();
