@@ -62,6 +62,7 @@ public class Controller {
             }else {
                 String name = view.comboBox.getValue().toString();
                 setupNewChat(name);
+                view.comboBox.getItems().remove(name);
                 view.comboBox.setValue(null);
             }
         });
@@ -336,6 +337,7 @@ public class Controller {
             for (int i = 0; i < onlineUsers.length(); i++) {
                 userList.add(onlineUsers.getString(i));
             }
+            view.comboBox.getItems().clear();
             view.comboBox.getItems().addAll(userList);
             return userList;
         } catch (JSONException e) {
