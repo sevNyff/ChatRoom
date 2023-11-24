@@ -10,15 +10,10 @@ import org.json.JSONException;
 
 public class LoginWindow {
     private final Controller controller;
-    private final View view;
-    private Model model;
-
     private GridPane grid;
 
-    public LoginWindow(Controller controller, View view, Model model) {
+    public LoginWindow(Controller controller) {
         this.controller = controller;
-        this.view = view;
-        this.model = model;
 
         grid = new GridPane();
         grid.setPadding(new Insets(20));
@@ -62,11 +57,10 @@ public class LoginWindow {
                 String token = controller.loginAndGetToken(username, password);
                 if (token != null && !token.isEmpty()) {
                     System.out.println("Login successful. Token: " + token);
-                    model.setUserToken(token);
+                    controller.setUserTokenFromLogin(token);
                     onSuccessfulLogin(token);
                     ((Stage) submitButton.getScene().getWindow()).close();
-                    view.topHBox.getChildren().remove(view.loginWindowButton);
-                    view.topHBox.getChildren().add(view.logoutButton);
+                    controller.deactivateLoginButton();
                 } else {
                     System.out.println("Login failed. Please check your credentials.");
                 }

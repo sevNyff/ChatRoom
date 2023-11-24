@@ -236,7 +236,7 @@ public class Controller {
         Stage loginStage = new Stage();
         loginStage.setTitle("Login Window");
 
-        LoginWindow loginWindow = new LoginWindow(this, this.view, this.model);
+        LoginWindow loginWindow = new LoginWindow(this);
 
         Scene scene = new Scene(loginWindow.getGrid(), 300, 200);
         String css = getClass().getResource("/styles.css").toExternalForm();
@@ -607,5 +607,12 @@ public class Controller {
             e.printStackTrace();
             return new ArrayList<>();
         }
+    }
+    public void deactivateLoginButton(){
+        view.topHBox.getChildren().remove(view.loginWindowButton);
+        view.topHBox.getChildren().add(view.logoutButton);
+    }
+    public void setUserTokenFromLogin(String token){
+        model.setUserToken(token);
     }
 }
