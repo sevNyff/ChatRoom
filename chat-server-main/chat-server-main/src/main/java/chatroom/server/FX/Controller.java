@@ -85,7 +85,7 @@ public class Controller {
         Button button = new Button();
         button.setText(name);
         button.getStyleClass().add("chat-button");
-        model.chats.put(name, "");
+        //model.chats.put(name, "");
 
         view.sendChatVBox.getChildren().add(button);
 
@@ -153,7 +153,7 @@ public class Controller {
                         Button button = new Button();
                         button.getStyleClass().add("chat-button");
                         button.setText(name);
-                        model.chats.put(name, "");
+                        model.chats.put(name, msg[1]);
 
                         view.sendChatVBox.getChildren().add(button);
 
