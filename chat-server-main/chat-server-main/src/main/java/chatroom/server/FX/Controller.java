@@ -85,7 +85,7 @@ public class Controller {
         Button button = new Button();
         button.setText(name);
         button.getStyleClass().add("chat-button");
-        //model.chats.put(name, "");
+        model.chats.put(name, "");
 
         view.sendChatVBox.getChildren().add(button);
 
@@ -145,7 +145,8 @@ public class Controller {
                     String name = msg[0];
                     //Prüfen ob ein chat mit der person besteht, wenn ja nur nachricht dem chat hinzufügen
                     if (model.getUserChats().contains(name)){
-                        String updatedValue = model.chats.get(name) + "From: " + msg[1] + "\n";
+                        String updatedValue = model.chats.get(name) + "From " + msg[0] + ":" + msg[1] + "\n";
+                        System.out.println(model.chats.get(name));
                         //TODO textarea aktuallisieren, wenn geht. Brad fragen
                         model.chats.put(name, updatedValue);
 
@@ -153,7 +154,7 @@ public class Controller {
                         Button button = new Button();
                         button.getStyleClass().add("chat-button");
                         button.setText(name);
-                        model.chats.put(name, msg[1]);
+                        model.chats.put(name, "From " + msg[0] + ":" + msg[1] + "\n");
 
                         view.sendChatVBox.getChildren().add(button);
 
