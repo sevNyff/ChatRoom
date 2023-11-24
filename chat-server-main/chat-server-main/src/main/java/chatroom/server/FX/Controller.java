@@ -143,13 +143,13 @@ public class Controller {
                     System.out.println("Received Message: " + message);
                     String[] msg = message.split(":");
                     String name = msg[0];
-                    //Prüfen ob ein chat mit der person besteht, wenn ja nur nachricht dem chat hinzufügen
+                    //Prüfen ob ein chat mit der person besteht, wenn ja nur nachricht dem bestehendem chat hinzufügen
                     if (model.getUserChats().contains(name)){
                         String updatedValue = model.chats.get(name) + "From " + msg[0] + ":" + msg[1] + "\n";
                         System.out.println(model.chats.get(name));
                         //TODO textarea aktuallisieren, wenn geht. Brad fragen
                         model.chats.put(name, updatedValue);
-
+                    //Chat besteht noch nicht, neues Chatfenster erstellen und nachrichten hinzufügen
                     }else {
                         Button button = new Button();
                         button.getStyleClass().add("chat-button");
@@ -302,11 +302,12 @@ public class Controller {
     public String getServerAddressFromTextField(){return view.serverAddressTextField.getText().split(":")[0];}
 
     public boolean pingServer(String serverAddress, int port) {
+        String pingServerEndpoint = "http://" + serverAddress + ":" + port + "/ping";
         try {
-            URL url = new URL("http://" + serverAddress + ":" + port + "/ping");
+            URL url = new URL(pingServerEndpoint);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-
+            //Wenn kein server erreicht wriden kann in 1 Sekunde, suche stoppen, sonnst läuft suche unendlich weiter
             connection.setConnectTimeout(1000);
 
             int responseCode = connection.getResponseCode();
@@ -559,10 +560,7 @@ public class Controller {
 
             connection.setDoOutput(true);
 
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("UTF-8");
-                os.write(input, 0, input.length);
-            }
+            connection.getOutputStream().write(jsonInputString.getBytes("UTF-8"));
 
             int responseCode = connection.getResponseCode();
 
