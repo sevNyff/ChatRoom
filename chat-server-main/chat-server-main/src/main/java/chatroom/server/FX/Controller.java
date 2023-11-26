@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -263,29 +264,19 @@ public class Controller {
             if (getPortNumberFromTextField() > 0 && getPortNumberFromTextField() < 65536) {
                 model.setServerPort(getPortNumberFromTextField());
                 model.setServerAddress(getServerAddressFromTextField());
-                pingServer(model.getServerAddress(), model.getServerPort());
-                try {
-                    int port = model.getServerPort();
-                    String serverAddress = model.getServerAddress();
-                    System.out.println("Server Address: " + serverAddress);
-                    System.out.println("Port: " + port);
+                //pingServer(model.getServerAddress(), model.getServerPort());
 
-                    if (pingServer(serverAddress, port)) {
-                        Platform.runLater(() -> {
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Ping successful!", ButtonType.OK);
-                            alert.showAndWait();
-                        });
-                    } else {
-                        Platform.runLater(() -> {
-                            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to ping the server!", ButtonType.OK);
-                            alert.showAndWait();
-                        });
-                    }
-                } catch (NumberFormatException e) {
+                System.out.println("Server Address: " + model.getServerAddress());
+                System.out.println("Port: " + model.getServerPort());
+
+                if (pingServer(model.getServerAddress(), model.getServerPort())) {
                     Platform.runLater(() -> {
-                        Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid port number!", ButtonType.OK);
-                        alert.showAndWait();
-                    });
+                        showAlertMessage("Ping successful!");
+                       });
+                    updateOnlineUsersList(fetchOnlineUsersFromServer());
+                    updateAllUserList(fetchAllUsersFromServer());
+                } else {
+                    showAlert("Unable to ping the server!");
                 }
             } else {
                 showAlert("Invalid port number!");
@@ -293,13 +284,9 @@ public class Controller {
         } catch (NumberFormatException e) {
             showAlert("Invalid port number!");
         }
-        updateOnlineUsersList(fetchOnlineUsersFromServer());
-        updateAllUserList(fetchAllUsersFromServer());
+
 
     }
-    public int getPortNumberFromTextField(){
-        return Integer.parseInt(view.serverAddressTextField.getText().split(":")[1]);}
-    public String getServerAddressFromTextField(){return view.serverAddressTextField.getText().split(":")[0];}
 
     public boolean pingServer(String serverAddress, int port) {
         String pingServerEndpoint = "http://" + serverAddress + ":" + port + "/ping";
@@ -307,16 +294,23 @@ public class Controller {
             URL url = new URL(pingServerEndpoint);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            //Wenn kein server erreicht wriden kann in 1 Sekunde, suche stoppen, sonnst läuft suche unendlich weiter
+            //Wenn kein server erreicht werden kann in 1 Sekunde, suche stoppen, sonnst läuft suche unendlich weiter
             connection.setConnectTimeout(1000);
 
             int responseCode = connection.getResponseCode();
             return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (SocketTimeoutException e) {
+            System.err.println("Connection timed out: Server is not reachable.");
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
+    public int getPortNumberFromTextField(){
+        return Integer.parseInt(view.serverAddressTextField.getText().split(":")[1]);}
+    public String getServerAddressFromTextField(){return view.serverAddressTextField.getText().split(":")[0];}
+
 
     public List<String> fetchOnlineUsersFromServer() {
         String serverEndpoint = "http://" + model.getServerAddress() + ":" + model.getServerPort() + "/users/online";
