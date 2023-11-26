@@ -13,6 +13,11 @@ import javafx.stage.Stage;
 public class RegisterWindow {
 
     private final Controller controller;
+    private Label usernameLabel, passwordLabel;
+    private TextField usernameField;
+    private PasswordField passwordField;
+    Button submitButton;
+
     private GridPane grid;
 
     public RegisterWindow(Controller controller) {
@@ -23,23 +28,18 @@ public class RegisterWindow {
         grid.setHgap(10);
         grid.getStyleClass().add("grid-pane");
 
-        Label usernameLabel = new Label("Username:");
-        TextField usernameField = new TextField();
+        usernameLabel = new Label("Username:");
+        usernameField = new TextField();
         usernameField.getStyleClass().add("loginRegister-textfields");
 
-        Label passwordLabel = new Label("Password:");
-        PasswordField passwordField = new PasswordField();
+        passwordLabel = new Label("Password:");
+        passwordField = new PasswordField();
         passwordField.getStyleClass().add("loginRegister-textfields");
 
-        Button submitButton = new Button("Submit");
+        submitButton = new Button("Submit");
 
         submitButton.setOnAction(event -> {
-            String username = usernameField.getText();
-            String password = passwordField.getText();
-            System.out.println("Username: " + username);
-            System.out.println("Password: " + password);
-
-            boolean registrationSuccess = controller.registerUser(username, password);
+            boolean registrationSuccess = controller.registerUser(usernameField.getText(), passwordField.getText());
 
             if (registrationSuccess) {
                 ((Stage) submitButton.getScene().getWindow()).close();

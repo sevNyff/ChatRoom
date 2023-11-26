@@ -28,9 +28,11 @@ public class Controller {
     public Controller(Model model, View view) {
         this.model = model;
         this.view = view;
+        //Beim Start der Applikation Users updaten in den beiden Tabs
         updateOnlineUsersList(fetchOnlineUsersFromServer());
         updateAllUserList(fetchAllUsersFromServer());
 
+        //Buttons Aktionen setzen
         view.pingServerTab.setOnAction(event -> {
             view.pane.setCenter(null);
             view.pane.setCenter(view.serverHBox);
@@ -54,14 +56,12 @@ public class Controller {
             onLogoutClicked();
             view.topHBox.getChildren().remove(view.logoutButton);
             view.topHBox.getChildren().add(view.loginWindowButton);
-            //Remove open Chats from chats tab and add online users back to the combobox
+            //Offene Chats löschen und die online User wieder der ComboBox hinzufügen
             view.sendChatVBox.getChildren().clear();
             view.receiveChatVBox.getChildren().clear();
             view.sendChatVBox.getChildren().addAll(view.sendToLabel, view.newChatBox);
             model.chats.clear();
-            //TODO testen ob wirklich liste neu lädt
             fetchOnlineUsersFromServer();
-
         });
 
         view.newChatButton.setOnAction(event -> {
@@ -72,20 +72,21 @@ public class Controller {
                 setupNewChat(name);
                 view.comboBox.getItems().remove(name);
                 view.comboBox.setValue(null);
+                //ArrayListe den Namen hinzufügen, wird in createWindowFromMessage() verwendet,
+                //um zu sehen, ob schon ein Chat mit der Person besteht
                 model.getUserChats().add(name);
             }
         });
         view.checknewMessage.setOnAction(event -> createWindowFromMessage());
 
-        view.getStage().setOnCloseRequest(event -> {
-            logoutUser();
-        });
+        view.getStage().setOnCloseRequest(event -> {logoutUser();});
     }
 
     private void setupNewChat(String name) {
         Button button = new Button();
         button.setText(name);
         button.getStyleClass().add("chat-button");
+        //Chat in HashMap speichern
         model.chats.put(name, "");
 
         view.sendChatVBox.getChildren().add(button);
@@ -148,7 +149,6 @@ public class Controller {
                     if (model.getUserChats().contains(name)){
                         String updatedValue = model.chats.get(name) + "From " + msg[0] + ":" + msg[1] + "\n";
                         System.out.println(model.chats.get(name));
-                        //TODO textarea aktuallisieren, wenn geht. Brad fragen
                         model.chats.put(name, updatedValue);
                     //Chat besteht noch nicht, neues Chatfenster erstellen und nachrichten hinzufügen
                     }else {
@@ -183,7 +183,6 @@ public class Controller {
             String myMessage = "To " + receiver + ": " + message;
             return myMessage;
         } else {
-            showAlert("Message sending failed.");
             return null;
         }
 
@@ -211,29 +210,27 @@ public class Controller {
             }
         });
     }
-
-    private void showAlert(String message) {
+    //Alert für Fehler
+    public void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message);
         alert.showAndWait();
     }
-    private void showAlertMessage(String message) {
+    //Alert für positive Nachrichten
+    public void showAlertMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
         alert.showAndWait();
     }
 
 
-    private void onLogoutClicked() {
+    public void onLogoutClicked() {
         logoutUser();
-        updateLogoutButton(false);
         showAlertMessage("You are logged out!");
         updateOnlineUsersList(fetchOnlineUsersFromServer());
     }
 
-    public void updateLogoutButton(boolean loggedIn) {
-        Platform.runLater(() -> view.logoutButton.setDisable(!loggedIn));
-    }
 
-    private void showLoginWindow(){
+
+    public void showLoginWindow(){
         Stage loginStage = new Stage();
         loginStage.setTitle("Login Window");
 
@@ -246,7 +243,7 @@ public class Controller {
 
         loginStage.show();
     }
-    public void onSuccessfulLogin(String token) {updateLogoutButton(true);}
+
 
     public boolean isLoggedIn() {
         System.out.println(model.getUserToken());
@@ -264,7 +261,6 @@ public class Controller {
             if (getPortNumberFromTextField() > 0 && getPortNumberFromTextField() < 65536) {
                 model.setServerPort(getPortNumberFromTextField());
                 model.setServerAddress(getServerAddressFromTextField());
-                //pingServer(model.getServerAddress(), model.getServerPort());
 
                 System.out.println("Server Address: " + model.getServerAddress());
                 System.out.println("Port: " + model.getServerPort());
@@ -294,7 +290,7 @@ public class Controller {
             URL url = new URL(pingServerEndpoint);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            //Wenn kein server erreicht werden kann in 1 Sekunde, suche stoppen, sonnst läuft suche unendlich weiter
+            //Wenn kein server erreicht werden kann in 1 Sekunde, Suche stoppen, sonnst läuft suche unendlich weiter
             connection.setConnectTimeout(1000);
 
             int responseCode = connection.getResponseCode();
@@ -310,7 +306,6 @@ public class Controller {
     public int getPortNumberFromTextField(){
         return Integer.parseInt(view.serverAddressTextField.getText().split(":")[1]);}
     public String getServerAddressFromTextField(){return view.serverAddressTextField.getText().split(":")[0];}
-
 
     public List<String> fetchOnlineUsersFromServer() {
         String serverEndpoint = "http://" + model.getServerAddress() + ":" + model.getServerPort() + "/users/online";
@@ -341,7 +336,7 @@ public class Controller {
             return new ArrayList<>();
         }
     }
-    private List<String> parseOnlineUserList(String response) {
+    public List<String> parseOnlineUserList(String response) {
         try {
             JSONObject json = new JSONObject(response);
             JSONArray onlineUsers = json.getJSONArray("online");
@@ -387,7 +382,7 @@ public class Controller {
             return new ArrayList<>();
         }
     }
-    private List<String> parseAllUserList(String response) {
+    public List<String> parseAllUserList(String response) {
         try {
             JSONObject json = new JSONObject(response);
             JSONArray onlineUsers = json.getJSONArray("users");
@@ -504,7 +499,7 @@ public class Controller {
         try {
             String token = model.getUserToken();
             if (token == null || token.isEmpty()) {
-                System.out.println("You need to log in first.");
+                showAlert("You need to log in first.");
                 return false;
             }
 
@@ -578,7 +573,7 @@ public class Controller {
         }
     }
 
-    private List<String> parseMessageList(String response) {
+    public List<String> parseMessageList(String response) {
         try {
             JSONObject json = new JSONObject(response);
 

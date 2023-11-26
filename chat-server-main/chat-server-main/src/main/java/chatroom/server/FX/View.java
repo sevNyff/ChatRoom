@@ -27,15 +27,18 @@ public class View {
                     pingServerTab, allUserTab, onlineUserTab, chatsTab;
     protected  ComboBox comboBox;
 
+    private Region space;
+
 
     public View(Stage stage, Model model) {
         this.model = model;
         this.stage = stage;
         stage.setTitle("Chat Room");
 
+        //Grund Layout der Applikation
         pane = new BorderPane();
 
-        //Top Part of the Application
+        //Oberer Teil der Applikation
         topHBox = new HBox();
         topHBox.getStyleClass().add("top-hbox");
         titleLabel = new Label("Chat App");
@@ -43,14 +46,13 @@ public class View {
         loginWindowButton = new Button(("Login"));
         loginWindowButton.getStyleClass().add("login-button");
         logoutButton = new Button("Logout");
-        logoutButton.setDisable(true);
         logoutButton.getStyleClass().add("logout-button");
-        Region space = new Region();
+        space = new Region();
         HBox.setHgrow(space, Priority.ALWAYS);
         topHBox.getChildren().addAll(titleLabel, space, loginWindowButton);
         pane.setTop(topHBox);
 
-        //Left part of the application
+        //Linker Teil: Navigationsleiste
         navigationVBox = new VBox();
         navigationVBox.getStyleClass().add("navigation-vbox");
         pingServerTab = new Button("Server");
@@ -64,6 +66,7 @@ public class View {
         navigationVBox.getChildren().addAll(pingServerTab, allUserTab, onlineUserTab, chatsTab);
         pane.setLeft(navigationVBox);
 
+        //Mittlerer Teil: verschiedene Fenster der Tabs
         //Server Tab
         serverHBox = new HBox();
         serverHBox.getStyleClass().add("chat-boxes");
@@ -71,9 +74,6 @@ public class View {
         serverAddressTextField = new TextField(model.getServerAddress() + ":" + model.getServerPort());
         serverAddressSetButton = new Button("Set Server");
         serverHBox.getChildren().addAll(serverAddressLabel, serverAddressTextField, serverAddressSetButton);
-
-
-
 
         //Online Users Tab
         onlineUsersVBox = new VBox();
@@ -88,7 +88,6 @@ public class View {
         allUsersTitleLabel = new Label("All Users");
         allUsersTitleLabel.getStyleClass().add("users-label");
         allUsersVBox.getChildren().addAll(allUsersTitleLabel);
-
 
         //Chats Tab
         centerBox = new HBox();
@@ -108,6 +107,7 @@ public class View {
         receiveChatVBox.getStyleClass().add("chat-boxes");
         centerBox.getChildren().addAll(sendChatVBox, receiveChatVBox);
 
+        //Seite die nur beim Start der Applikation gezeigt wird
         welcomeLabel = new Label("Welcome");
         pane.setCenter(welcomeLabel);
 

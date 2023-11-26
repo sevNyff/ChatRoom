@@ -10,6 +10,12 @@ import org.json.JSONException;
 
 public class LoginWindow {
     private final Controller controller;
+    private Label usernameLabel, passwordLabel;
+    private TextField usernameField;
+    private PasswordField passwordField;
+    private Button registerButton, submitButton;
+    private Stage registerStage;
+    private RegisterWindow registerWindow;
     private GridPane grid;
 
     public LoginWindow(Controller controller) {
@@ -22,21 +28,21 @@ public class LoginWindow {
         grid.getStyleClass().add("grid-pane");
 
 
-        Label usernameLabel = new Label("Username:");
-        TextField usernameField = new TextField();
+        usernameLabel = new Label("Username:");
+        usernameField = new TextField();
         usernameField.getStyleClass().add("loginRegister-textfields");
 
-        Label passwordLabel = new Label("Password:");
-        PasswordField passwordField = new PasswordField();
+        passwordLabel = new Label("Password:");
+        passwordField = new PasswordField();
         passwordField.getStyleClass().add("loginRegister-textfields");
 
-        Button registerButton = new Button("Register now");
+        registerButton = new Button("Register now");
         registerButton.getStyleClass().add("register-button");
         registerButton.setOnAction(event -> {
-            Stage registerStage = new Stage();
+            registerStage = new Stage();
             registerStage.setTitle("Register Window");
 
-            RegisterWindow registerWindow = new RegisterWindow(this.controller);
+            registerWindow = new RegisterWindow(this.controller);
 
             Scene scene = new Scene(registerWindow.getGrid(), 300, 150);
             String css = getClass().getResource("/styles.css").toExternalForm();
@@ -46,19 +52,14 @@ public class LoginWindow {
             registerStage.show();
         });
 
-        Button submitButton = new Button("Submit");
+        submitButton = new Button("Submit");
         submitButton.setOnAction(event -> {
-            String username = usernameField.getText();
-            String password = passwordField.getText();
-            System.out.println("Username: " + username);
-            System.out.println("Password: " + password);
-
             try {
-                String token = controller.loginAndGetToken(username, password);
+                String token = controller.loginAndGetToken(usernameField.getText(), passwordField.getText());
                 if (token != null && !token.isEmpty()) {
                     System.out.println("Login successful. Token: " + token);
                     controller.setUserTokenFromLogin(token);
-                    onSuccessfulLogin(token);
+
                     ((Stage) submitButton.getScene().getWindow()).close();
                     controller.deactivateLoginButton();
                 } else {
@@ -66,7 +67,7 @@ public class LoginWindow {
                 }
             } catch (JSONException e){
                 System.out.println("Login failed. Please check your credentials.");
-                showAlert("Login failed. Please check your credentials.");
+                controller.showAlert("Login failed. Please check your credentials.");
             }
             controller.updateOnlineUsersList(controller.fetchOnlineUsersFromServer());
             ((Stage) submitButton.getScene().getWindow()).close();
@@ -84,17 +85,8 @@ public class LoginWindow {
 
     }
 
-    private void onSuccessfulLogin(String token) {
-        controller.onSuccessfulLogin(token);
-    }
-    public GridPane getGrid() {
-        return grid;
-    }
 
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR, message);
-        alert.showAndWait();
-    }
+    public GridPane getGrid() {return grid;}
 }
 
 

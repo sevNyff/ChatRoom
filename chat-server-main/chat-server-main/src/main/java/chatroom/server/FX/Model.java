@@ -14,13 +14,12 @@ public class Model {
     private ArrayList<String> userChats;
 
     public Model() {
-        // Set default server address and port
         this.serverAddress = "javaprojects.ch";
         this.serverPort = 50001;
         this.chats = new HashMap<>();
         this.userChats = new ArrayList<>();
     }
-
+    //Getters und setters
     public void setChats(HashMap<String, String> chats) {
         this.chats = chats;
     }
@@ -36,7 +35,7 @@ public class Model {
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
     }
-    public String getServerAddress(){return this.serverAddress;};
+    public String getServerAddress(){return this.serverAddress;}
     public void setServerPort(int serverPort) {
         this.serverPort = serverPort;
     }
